@@ -2,6 +2,8 @@
 exports.isApple     = false;
 exports.isAndroid   = false;
 exports.isTablet    = false;
+exports.isSupported = true;
+
 exports.name        = Ti.Platform.osname;
 exports.version     = Ti.Platform.version;
 exports.height      = Ti.Platform.displayCaps.platformHeight;
