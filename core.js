@@ -1,8 +1,10 @@
+var Core = {};
+
 /**
  * Record the first time this file is loaded as soon as possible
- * @see exports.log
+ * @see Core.log
  */
-exports.time = new Date().getTime();
+Core.time = new Date().getTime();
 
 var Path   = require('sys/core/path');
 var Obj    = require('sys/core/object');
@@ -28,28 +30,28 @@ if (typeof Config != 'object') Config = {
 /**
  * Make Module available through Core.
  */
-exports.config = Config;
+Core.config = Config;
 
 /**
  * Make Path module available through Core.
  */
-exports.path = Path;
+Core.path = Path;
 
 /**
  * Make Object module methods silently available through core.
  */
-Obj.extend(exports, Obj);
+Core = Obj.extend(Core, Obj);
 
 /**
  * Make Type module methods, silently available through core.
  */
-Obj.extend(exports, Type);
+Core = Obj.extend(Core, Type);
 
 /**
  * Overcomes a titanium bug with arguments keyword not being iterable,
  * this method converts the object to an array.
  */
-exports.args = function(args){
+Core.args = function(args){
     return Array.prototype.slice.call(args);
 };
 
@@ -59,7 +61,7 @@ exports.args = function(args){
  * @author Héctor Menéndez <etor.mx@gmail.com>
  * @created 2011/JUL/31 12:31
  */
-exports.error = function(message, title){
+Core.error = function(message, title){
     title   = typeof title   == 'string'? title   : 'Error';
     message = typeof message == 'string'? message : 'Unknown';
     throw   title + ': ' + message;
@@ -71,7 +73,7 @@ exports.error = function(message, title){
  * @author Héctor Menéndez <etor.mx@gmail.com>
  * @created 2012/JUL/31 12:15
  */
-exports.log = function(message, context){
+Core.log = function(message, context){
     if (!Config.debug) return false;
     if (this.isObject(message) || this.isArray(message))
         message = JSON.stringify(message);
@@ -92,21 +94,21 @@ exports.log = function(message, context){
  * @created  2011/NOV/21 14:33
  * @updated  2012/JUL/31 13:10   Now using commonJS
  */
-exports.load = function(args){
+Core.load = function(args){
     // connvert arguments to an array
     if (args.length < 1 || typeof args[0] != 'string')
-        return exports.error('sys:core:load:args');
+        return Core.error('sys:core:load:args');
     // include file
     var file = args.shift();
     if (!Path.exists(Path.app + file))
-        return exports.error('sys:core:load:file');
+        return Core.error('sys:core:load:file');
     var fn = require(Path.app + file);
     // verify a constructor is defined
     if (typeof fn.constructor != 'function')
-        return exports.error('sys:core:load:constructor');
+        return Core.error('sys:core:load:constructor');
     // duplicate constructor, so we can pass arguments to instantiated class.
     var factory = function(){
-        exports.log([fn, args], 'sys:core:load');
+        Core.log([fn, args], 'sys:core:load');
         return fn.constructor.apply(this, args);
     };
     factory.prototype = fn.constructor.prototype;
@@ -114,3 +116,5 @@ exports.load = function(args){
     delete fn;
     return factory;
 };
+
+module.exports = Core;
