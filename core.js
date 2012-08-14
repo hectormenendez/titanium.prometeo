@@ -1,8 +1,22 @@
+/**
+ *      ______
+ *     / ____/___  ________
+ *    / /   / __ \/ ___/ _ \
+ *   / /___/ /_/ / /  /  __/
+ *   \____/\____/_/   \___/
+ *
+ * {file}   Basic and not specialized functionality.
+ *
+ * @created 2012/AGO/14 17:31 Héctor Menéndez <etor.mx@gmail.com>
+ * @log     Added Documentation.
+ **/
 var Core = {};
 
 /**
- * Record the first time this file is loaded as soon as possible
- * @see Core.log
+ * Main timer
+ * {prop}   Records the first time this file is loaded as soon as possible
+ *
+ * @see     #sys/core.log
  */
 Core.time = new Date().getTime();
 
@@ -12,54 +26,72 @@ var Type   = require('sys/core/type');
 
 if (!Path.exists('config')) throw 'A configuration file must exist.';
 
-var Config = require('config').core;
+/**
+ * {config}
+ *
+ * @created 2012/AGO/14 17:39 Héctor Menéndez <etor.mx@gmail.com>
+ * @see     #config
+ */
+Core.config = require('config').core;
 if (typeof Config != 'object') Config = {
 
-    /**
-     * Which version of Prometeo are we working on.
-     */
+    // Which version of Prometeo are we working on.
     version : 0.1,
 
-    /**
-     * Do we need to be verbose?
-     */
+    // Do we need to be verbose?
     debug : false
 };
 
-
 /**
- * Make Module available through Core.
- */
-Core.config = Config;
-
-/**
- * Make Path module available through Core.
+ * Path
+ * {prop}   Makes Path module available through framework.
+ *
+ * @created 2012/AGO/14 17:42 Héctor Menéndez <etor.mx@gmail.com>
  */
 Core.path = Path;
 
 /**
- * Make Object module methods silently available through core.
+ * Object
+ * {extend} Make Object module methods silently available through core.
+ *
+ * @created 2012/AGO/14 17:46 Héctor Menéndez <etor.mx@gmail.com>
+ * @see     #sys/core/object
  */
 Core = Obj.extend(Core, Obj);
 
 /**
- * Make Type module methods, silently available through core.
+ * Type
+ * {extend} Make Type module methods silently available through core.
+ *
+ * @created 2012/AGO/14 17:48 Héctor Menéndez <etor.mx@gmail.com>
+ * @see     #sys/core/type
  */
 Core = Obj.extend(Core, Type);
 
 /**
- * Overcomes a titanium bug with arguments keyword not being iterable,
- * this method converts the object to an array.
+ * Argument Handler
+ * {method} Overcomes a titanium bug with arguments keyword not being iterable,
+ *
+ * @param   {object} args: The original arguments object.
+ *
+ * @returns {array} Arguments object, converted to array.
+ * @created 2012/AGO/14 17:51 Héctor Menéndez <etor.mx@gmail.com>
  */
 Core.args = function(args){
     return Array.prototype.slice.call(args);
 };
 
 /**
- * Throws an error.
+ * Error Handler
+ * {method} Throws an error, halting execution.
  *
- * @author Héctor Menéndez <etor.mx@gmail.com>
- * @created 2011/JUL/31 12:31
+ * @param   {string} message:   The message to be displayed (Unknown by default)
+ * @param   {string}   title:   The Title for the error. (Error by default)
+ *
+ * @note    It's highly encouraged to use the following format for the message:
+ *          {path:to}:{file}:{method}:{keyword}
+ *
+ * @created Héctor Menéndez <etor.mx@gmail.com> 2011/JUL/31 12:31
  */
 Core.error = function(message, title){
     title   = typeof title   == 'string'? title   : 'Error';
@@ -68,10 +100,16 @@ Core.error = function(message, title){
 };
 
 /**
- * Logs based upon Config debug option.
+ * Logger
+ * {method} Logs based upon Config debug option.
  *
- * @author Héctor Menéndez <etor.mx@gmail.com>
- * @created 2012/JUL/31 12:15
+ * @param   {string} message:   The message to be sent to the logger.
+ * @param   {string} context:   A context to facilitate user finding the log source.
+ *
+ * @note    As with Core.error, is ecouraged to add the following format as context:
+ *          {path:to}:{file}:{action}
+ *
+ * @created 2012/JUL/31 12:15 Héctor Menéndez <etor.mx@gmail.com>
  */
 Core.log = function(message, context){
     if (!Config.debug) return false;
@@ -88,11 +126,17 @@ Core.log = function(message, context){
 
 
 /**
- * Instantiates an application file.
+ * Application loader
+ * {method} Loads a file from the application folder as if it was a module and
+ *          runs a custom constructor
  *
- * @author Héctor Menéndez <etor.mx@gmail.com>
- * @created  2011/NOV/21 14:33
- * @updated  2012/JUL/31 13:10   Now using commonJS
+ * @param   {array}*    An array of arguments to be sent to the constructor,
+ *                      The first one must be a string, with the app name.
+ *
+ * @created 2011/NOV/21 14:33 Héctor Menéndez <etor.mx@gmail.com>
+ * @updated 2012/JUL/31 13:10 Héctor Menéndez <etor.mx@gmail.com>
+ *
+ * @log     Now using commonJS
  */
 Core.load = function(args){
     // connvert arguments to an array
