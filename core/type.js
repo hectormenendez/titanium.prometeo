@@ -1,4 +1,14 @@
 /**
+ * Checks if given element is indeed a string
+ *
+ * @author  Héctor Menéndez
+ * @created 2012/AGO/15 04:53
+ */
+exports.isString = function(element){
+    return typeof element == 'string';
+};
+
+/**
  * Checks if given element is indeed an array
  *
  * @author  Héctor Menéndez

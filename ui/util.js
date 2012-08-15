@@ -1,5 +1,5 @@
-var Core = require('sys/core');
-var Style  = require('style');
+var Core  = require('sys/core');
+var Style = require('style');
 
 /**
  * Every element native element will have all these properties
@@ -38,33 +38,30 @@ exports.Titanium = {
 
 // Exports elements
 exports.declare = function(prop){
-    var e = this;
+    var self = this;
     // make sure the element has a declared style.
-    exports.style(e.name);
-
-    if (!Core.isObject(e.extend)) e.extend = {};
-    Core.log('Declaring elemental', 'sys:ui:{' + e.name + '}') ;
+    exports.style(self.name);
+    if (!Core.isObject(self.extend)) self.extend = {};
+    Core.log('Declaring elemental', 'sys:ui:{' + self.name + '}') ;
     this.element = function(properties){
         var element = {};
         // detect classes declared and apply styles.
-        properties = exports.classer(e.name, properties);
-        // create titanium element and make it availablo for both constructor and element.
-        Core.log('Creating Raw element', 'sys:ui:{' + e.name + '}');
-        // Obtain raw element
-        element.raw = e.raw = e.method(properties);
+        properties = exports.classer(self.name, properties);
+        // create titanium element and make it available for both constructor and element.
+        Core.log('Creating Raw element ' + self.method.toString(), 'sys:ui:{' + self.name + '}');
+        element.raw = self.raw = self.method(properties);
         // if there's a constructor defined, run it and delete it.
-        if (Core.isFunction(e.extend.constructor)) {
-            Core.log('Calling constructor', 'sys:ui:{' + e.name + '}');
-            e.extend.constructor.call(e, properties);
-            delete e.extend.constructor;
+        if (Core.isFunction(self.extend.construct)) {
+            Core.log('Calling constructor', 'sys:ui:{' + self.name + '}');
+            self.extend.construct.call(self, properties);
+            self.extend.construct = undefined;
         }
         // Define element structure, with both default and extended properties.
-        Core.log(properties, 'sys:ui:{' + e.name + '}');
-        element = Core.extend(element, exports.Titanium, e.extend);
+        element = Core.extend(exports.Titanium, self.extend, element);
+        Core.log('Returning UI element ' + Core.stringify(element), 'sys:ui:{' + self.name + '}');
         return element;
     };
 };
-
 
 /**
  * Obtain the raw titanium element from custom element.
@@ -76,7 +73,7 @@ exports.getTitanium = function(element){
     if (typeof element != 'object') return Core.error('sys:ui:util:titanium:object');
     var found = true;
     for (var i in exports.Titanium) {
-        if (typeof element[i] != 'undefined') continue;
+        if (Core.isDefined(element[i])) continue;
         found = false;
         break;
     }
@@ -93,18 +90,25 @@ exports.getTitanium = function(element){
  */
 exports.classer = function(element, obj){
     if (!Core.isObject(obj)) obj = {};
-    if (!Core.isDefined(element))       return Core.error('sys:ui:util:classer:element');
-    if (!Core.isObject(Style[element])) return Core.error('sys:ui:util:classer:{' + element + '}');
+    if (!Core.isDefined(element))
+        return Core.error('sys:ui:util:classer:element');
+
     element = element.toString();
+
+    if (!Core.isObject(Style[element]) || !Core.isObject(Style[element]['raw']))
+        return Core.error('sys:ui:util:classer:{' + element + '}');
     // Determine if there's a class to apply, otherwise use master.
     var klass = false;
     if (Core.isDefined(obj['class'])){
         klass = obj['class'].toString();
-        delete obj['class'];
-        if (klass && !Core.isObject(Style[element][klass]))
+        obj['class'] = undefined;
+        if (klass && (
+            !Core.isObject(Style[element]['class']) ||
+            !Core.isObject(Style[element]['class'][klass])
+        ))
             return Core.error('sys:ui:util:classer:{' + element + '.' + klass + '}');
     }
-    var target = klass? Style[element][klass] : Style[element];
+    var target = klass? Style[element]['class'][klass] : Style[element]['raw'];
 
     Core.log(element + (klass? '.' + klass : ' [no class]') , 'sys:ui:util:classer');
     return Core.extend(target, obj, {
@@ -115,10 +119,10 @@ exports.classer = function(element, obj){
 
 exports.style = function(name){
     name = name.toString();
-    if (Core.isDefined(Style[name])) {
-        Core.log(Style[name], 'style:{' + name + '}');
+    if (Core.isObject(Style[name]) && Core.isObject(Style[name].raw)) {
+        Core.log(Style[name].raw, 'style:{' + name + '}');
         return true;
     }
     Core.log('Created style', 'style:{' + name + '}');
-    Style[name] = { };
+    Style[name] = { raw:{}, 'class':{} };
 };

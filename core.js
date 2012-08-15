@@ -20,9 +20,9 @@ var Core = {};
  */
 Core.time = new Date().getTime();
 
-var Path   = require('sys/core/path');
-var Obj    = require('sys/core/object');
-var Type   = require('sys/core/type');
+var Path = require('sys/core/path');
+var Obj  = require('sys/core/object');
+var Type = require('sys/core/type');
 
 if (!Path.exists('config')) throw 'A configuration file must exist.';
 
@@ -32,15 +32,16 @@ if (!Path.exists('config')) throw 'A configuration file must exist.';
  * @created 2012/AGO/14 17:39 Héctor Menéndez <etor.mx@gmail.com>
  * @see     #config
  */
-Core.config = require('config').core;
-if (typeof Config != 'object') Config = {
+Config = Obj.extend({
 
     // Which version of Prometeo are we working on.
     version : 0.1,
 
     // Do we need to be verbose?
     debug : false
-};
+
+}, require('config').core || {});
+
 
 /**
  * Path
@@ -48,7 +49,7 @@ if (typeof Config != 'object') Config = {
  *
  * @created 2012/AGO/14 17:42 Héctor Menéndez <etor.mx@gmail.com>
  */
-Core.path = Path;
+Core.Path = Path;
 
 /**
  * Object
@@ -124,7 +125,6 @@ Core.log = function(message, context){
     );
 };
 
-
 /**
  * Application loader
  * {method} Loads a file from the application folder as if it was a module and
@@ -148,16 +148,16 @@ Core.load = function(args){
         return Core.error('sys:core:load:file');
     var fn = require(Path.app + file);
     // verify a constructor is defined
-    if (typeof fn.constructor != 'function')
+    if (typeof fn.construct != 'function')
         return Core.error('sys:core:load:constructor');
     // duplicate constructor, so we can pass arguments to instantiated class.
     var factory = function(){
         Core.log([fn, args], 'sys:core:load');
-        return fn.constructor.apply(this, args);
+        return fn.construct.apply(this, args);
     };
-    factory.prototype = fn.constructor.prototype;
+    factory.prototype = fn.construct.prototype;
     factory.prototype.id = file;
-    delete fn;
+   // fn = undefined;
     return factory;
 };
 

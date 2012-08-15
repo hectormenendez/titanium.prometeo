@@ -1,3 +1,9 @@
+exports.copy = function(obj){
+    if (typeof obj != 'object' || !obj instanceof Object) return false;
+    var result = {};
+    for(var i in obj) if (obj.hasOwnProperty(i)) result[i] = obj[i];
+    return result;
+};
 
 /**
  * Correctly Iterates an object.
@@ -37,11 +43,24 @@ exports.extend = function(){
  * Count elements in object
  *
  * @author Héctor Menéndez <etor.mx@gmail.com>
- * @created 2011/AGO/01 13:27
+ * @created 2012/AGO/01 13:27
  */
 exports.count = function(obj){
     var count = 0;
     if (typeof obj != 'object') return count;
     for (var i in obj) if (obj.hasOwnProperty(i)) count++;
     return count;
+};
+
+/**
+ * Stringify an object without losing elements containing callbacks.
+ *
+ * @author Héctor Menéndez <etor.mx@gmail.com>
+ * @created 2012/AGO/15 10:27
+ */
+exports.stringify = function(obj){
+    var log = {};
+    for (var l in obj)
+        log[l] = typeof obj[l] == 'function'?'callback()':JSON.stringify(obj[l]).replace(/\"/g,"'");
+    return JSON.stringify(log);
 };

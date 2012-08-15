@@ -32,3 +32,11 @@ exports.exists = function(path){
     }
     return false;
 };
+
+
+exports.read = function(path){
+    //if (!exports.exists(path)) return false;
+    file = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, path + exports.extension);
+    var blob = file.read();
+    return blob.text;
+};
