@@ -24,7 +24,7 @@ var Path = require('sys/core/path');
 var Obj  = require('sys/core/object');
 var Type = require('sys/core/type');
 
-if (!Path.exists('config')) throw 'A configuration file must exist.';
+//if (!Path.exists('config')) throw 'A configuration file must exist.';
 
 /**
  * {config}
@@ -144,12 +144,12 @@ Core.load = function(args){
         return Core.error('sys:core:load:args');
     // include file
     var file = args.shift();
-    if (!Path.exists(Path.app + file))
-        return Core.error('sys:core:load:file');
+    //if (!Path.exists(Path.app + file))
+    //    return Core.error(file, 'sys:core:load:file');
     var fn = require(Path.app + file);
     // verify a constructor is defined
     if (typeof fn.construct != 'function')
-        return Core.error('sys:core:load:constructor');
+        return Core.error(file, 'sys:core:load:construct');
     // duplicate constructor, so we can pass arguments to instantiated class.
     var factory = function(){
         Core.log([fn, args], 'sys:core:load');

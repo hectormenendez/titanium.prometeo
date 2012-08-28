@@ -23,20 +23,21 @@ exports.app = 'application/';
  * The context will be the resources directory.
  */
 exports.exists = function(path){
-    if (typeof path != 'string') return false;
     var i, b;
-    path = [exports.resources+path+exports.extension, exports.resources+path];
-    for (i in path){
-        b = Ti.Filesystem.getFile(path[i]).exists();
+    //path = [exports.resources + path + exports.extension, exports.resources+path];
+    //for (i in path){
+        var file = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, path.toString() + '.js');
+		return file.exists();
+
         if (b) return true;
-    }
+    //}
     return false;
 };
 
 
 exports.read = function(path){
     //if (!exports.exists(path)) return false;
-    file = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, path + exports.extension);
+    var file = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, path + exports.extension);
     var blob = file.read();
     return blob.text;
 };
