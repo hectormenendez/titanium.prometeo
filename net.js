@@ -38,7 +38,7 @@ exports.xhr = function(obj){
 
     var log = function(message, action){
         action = action.toUpperCase();
-        message = JSON.stringify(message).replace(/(\s|\\n)+/g, '');
+        message = Core.stringify(message).replace(/(\s|\\n)+/g, '');
         message = message.replace(/\\\"+/g,'"');
         Core.log('['+ action +'] ' + message, 'xhr');
     };

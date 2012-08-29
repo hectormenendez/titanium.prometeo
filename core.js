@@ -23,10 +23,10 @@ Core.time = new Date().getTime();
 /**
  * Load Core sub modules.
  */
-var Path   = require('sys/core/path');
-var Obj    = require('sys/core/object');
-var Type   = require('sys/core/type');
-var Device = require('sys/core/device');
+var Path    = require('sys/core/path');
+var Objects = require('sys/core/objects');
+var Type    = require('sys/core/type');
+var Device  = require('sys/core/device');
 
 /**
  * Core configuration.
@@ -36,7 +36,7 @@ var Device = require('sys/core/device');
  * @created 2012/AGO/14 17:39 Héctor Menéndez <etor.mx@gmail.com>
  * @see     #config
  */
-Config = Obj.extend({
+Config = Objects.extend({
 
     // Minimal SDK version that the framework supports.
     SDK : 2.2,
@@ -86,7 +86,7 @@ Core.Device = Device;
  * @created 2012/AGO/14 17:46 Héctor Menéndez <etor.mx@gmail.com>
  * @see     #sys/core/object
  */
-Core = Obj.extend(Core, Obj);
+Core = Objects.extend(Core, Objects);
 
 /**
  * Type
@@ -95,7 +95,7 @@ Core = Obj.extend(Core, Obj);
  * @created 2012/AGO/14 17:48 Héctor Menéndez <etor.mx@gmail.com>
  * @see     #sys/core/type
  */
-Core = Obj.extend(Core, Type);
+Core = Objects.extend(Core, Type);
 
 /**
  * Argument Handler
@@ -143,9 +143,9 @@ Core.error = function(message, title){
 Core.log = function(message, context){
     if (!Config.debug) return false;
     if (this.isObject(message) || this.isArray(message))
-        message = JSON.stringify(message);
+        message = Core.stringify(message);
     else if (this.isArgument(message))
-        message = JSON.stringify(this.args(message));
+        message = Core.stringify(this.args(message));
     return Ti.API.log(
         Math.abs(this.time - new Date().getTime()).toString(),
         '[' + (typeof context == 'string'? context.toUpperCase() : 'LOG') + '] ' +

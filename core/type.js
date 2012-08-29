@@ -1,10 +1,13 @@
+
+var Type = {};
+
 /**
  * Checks if given element is indeed a string
  *
  * @author  Héctor Menéndez
  * @created 2012/AGO/15 04:53
  */
-exports.isString = function(element){
+Type.isString = function(element){
     return typeof element == 'string';
 };
 
@@ -14,7 +17,7 @@ exports.isString = function(element){
  * @author  Héctor Menéndez
  * @created 2012/AGO/8 03:15
  */
-exports.isArray = function(element){
+Type.isArray = function(element){
     return typeof element == 'object' && element instanceof Array;
 };
 
@@ -24,7 +27,7 @@ exports.isArray = function(element){
  * @author  Héctor Menéndez
  * @created 2012/AGO/8 03:15
  */
-exports.isObject = function(element){
+Type.isObject = function(element){
     return typeof element == 'object' && element.toString() == '[object Object]';
 };
 
@@ -34,7 +37,7 @@ exports.isObject = function(element){
  * @author  Héctor Menéndez
  * @created 2012/AGO/8 03:15
  */
-exports.isArgument = function(element){
+Type.isArgument = function(element){
     return typeof element == 'object' && element.toString() == '[object Arguments]';
 };
 
@@ -45,7 +48,7 @@ exports.isArgument = function(element){
  * @author  Héctor Menéndez
  * @created 2012/AGO/8 03:15
  */
-exports.isFunction = function(element){
+Type.isFunction = function(element){
     return typeof element == 'function';
 };
 
@@ -55,6 +58,26 @@ exports.isFunction = function(element){
  * @author  Héctor Menéndez
  * @created 2012/AGO/8 03:15
  */
-exports.isDefined = function(element){
+Type.isDefined = function(element){
     return typeof element != 'undefined';
 };
+
+/**
+ * Checks if given element is a Ti.UI element.
+ *
+ * @param {Object} element
+ * @author Héctor Menéndez <etor.mx@gmail.com>
+ * @created 2012/AGO/29 12:26
+ */
+Type.isTitanium = function(element){
+	return (
+		typeof element == 'object' &&
+		(
+			Type.isDefined(element.titaniumName)
+		||
+			(Type.isDefined(element.children) && Type.isDefined(element.parent))
+		)
+	);
+}
+
+module.exports = Type;

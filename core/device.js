@@ -1,25 +1,29 @@
 
-exports.isApple     = false;
-exports.isAndroid   = false;
-exports.isTablet    = false;
-exports.isSupported = true;
+var Device = {};
 
-exports.name        = Ti.Platform.osname;
-exports.version     = Ti.Platform.version;
-exports.height      = Ti.Platform.displayCaps.platformHeight;
-exports.width       = Ti.Platform.displayCaps.platformWidth;
+Device.isApple     = false;
+Device.isAndroid   = false;
+Device.isTablet    = false;
+Device.isSupported = true;
 
-switch (exports.name) {
+Device.name        = Ti.Platform.osname;
+Device.version     = Ti.Platform.version;
+Device.height      = Ti.Platform.displayCaps.platformHeight;
+Device.width       = Ti.Platform.displayCaps.platformWidth;
+
+switch (Device.name) {
     case 'ipad'   :
     case 'iphone' :
-        exports.isApple  = true;
+        Device.isApple  = true;
         break;
     case 'android':
-        exports.isAndroid = true;
+        Device.isAndroid = true;
         break;
     default:
-        exports.isSupported = false;
+        Device.isSupported = false;
 }
 
-if (exports.name == 'ipad' || exports.height > 899 || exports.width > 899)
-    exports.isTablet = true;
+if (Device.name == 'ipad' || Device.height > 899 || Device.width > 899)
+    Device.isTablet = true;
+
+module.exports = Device;

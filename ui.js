@@ -22,6 +22,7 @@ element = [
     },
     { name: 'view'           , method : Ti.UI.createView              },
     { name: 'image'          , method : Ti.UI.createImageView         },
+    { name: 'map'            , method : Ti.Map.createView             },
     { name: 'button'         , method : Ti.UI.createButton            },
     { name: 'label'          , method : Ti.UI.createLabel             },
     { name: 'scrollview'     , method : Ti.UI.createScrollView        },

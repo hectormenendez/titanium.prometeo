@@ -1,13 +1,15 @@
 
+var Path = {};
+
 /**
  * Resources directory full path
  */
-exports.resources = Ti.Filesystem.getResourcesDirectory();
+Path.resources = Ti.Filesystem.getResourcesDirectory();
 
 /**
  * Default extension for application files.
  */
-exports.extension = '.js';
+Path.extension = '.js';
 
 /**
  * Path relative to resources where application files should be stored
@@ -15,16 +17,16 @@ exports.extension = '.js';
  * Note: Do not name this folder 'app', as in Ti v2.2 there's a bug where
  *       an error is thrown if the compiler detects app as name.
  */
-exports.app = 'application/';
+Path.app = 'application/';
 
 
 /**
  * Checks if given file exists, if not, then check if directory exists.
  * The context will be the resources directory.
  */
-exports.exists = function(path){
+Path.exists = function(path){
     var i, b;
-    //path = [exports.resources + path + exports.extension, exports.resources+path];
+    //path = [Path.resources + path + Path.extension, Path.resources+path];
     //for (i in path){
         var file = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, path.toString() + '.js');
 		return file.exists();
@@ -35,9 +37,11 @@ exports.exists = function(path){
 };
 
 
-exports.read = function(path){
-    //if (!exports.exists(path)) return false;
-    var file = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, path + exports.extension);
+Path.read = function(path){
+    //if (!Path.exists(path)) return false;
+    var file = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, path + Path.extension);
     var blob = file.read();
     return blob.text;
 };
+
+module.exports = Path;

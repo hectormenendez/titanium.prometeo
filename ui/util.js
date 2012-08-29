@@ -70,7 +70,7 @@ exports.declare = function(prop){
         // detect classes declared and apply styles.
         properties = exports.classer(self.name, properties);
         // create titanium element and make it available for both constructor and element.
-        Core.log('Creating Raw element ' + Core.stringify(properties), 'sys:ui:{' + self.name + '}');
+        // Core.log('Creating Raw element ' + Core.stringify(properties), 'sys:ui:{' + self.name + '}');
         element.raw = self.raw = self.method(properties);
         // if there's a constructor defined, run it and delete it.
         if (Core.isFunction(self.extend.construct)) {
@@ -80,7 +80,7 @@ exports.declare = function(prop){
         }
         // Define element structure, with both default and extended properties.
         element = Core.extend(exports.Titanium, self.extend, element);
-        Core.log('Returning UI element ' + Core.stringify(element), 'sys:ui:{' + self.name + '}');
+        // Core.log('Returning UI element ' + Core.stringify(element), 'sys:ui:{' + self.name + '}');
         return element;
     };
 };
@@ -97,11 +97,8 @@ exports.getTitanium = function(element){
     // custom element?
 	if (Core.isDefined(element.raw))
 		return element.raw;
-	// custom raw element?
-    if (Core.isDefined(element.titaniumName))
-    	return element;
     // native raw element, then? (TODO: Find a better way of doing this.)
-    if (Core.isDefined(element.children) && Core.isDefined(element.parent))
+    if (Core.isTitanium)
     	return element;
     return Core.error('sys:ui:util:titanium:invalid');
 };
