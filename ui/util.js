@@ -5,10 +5,26 @@ var Style = require('style');
  * Every element native element will have all these properties
  */
 exports.Titanium = {
-    add: function(element){
+    add: function(element, properties){
         Core.log(element, 'sys:ui:util:titanium:add');
-        element = exports.getTitanium(element);
-        return this.raw.add(element);
+		// if an element is being sent, just add it with no auto variable.
+        if (Core.isObject(element)){
+	        element = exports.getTitanium(element);
+	        return this.raw.add(element);
+        }
+        // but if a string was sent, then the user wants us
+        // to create an auto element.
+		if (!Core.isString(element))
+			return Core.error(element, 'sys:ui:util:titanium:add:element');
+		// the auto creation is limited to elementals.
+		if (!Core.isDefined(exports.declared[element]))
+			return Core.error(element, 'sys:ui:util:titanium:add:defined');
+		if (!Core.isObject(properties)) properties = {};
+		// all ok, create and add element.
+		var UI = require('sys/ui');
+		this['$' + element] = UI[element](properties);
+		this.add(this['$' + element]);
+		return this['$' + element];
     },
 
     del: function(element){
@@ -36,6 +52,8 @@ exports.Titanium = {
     raw : null
 };
 
+exports.declared = {};
+
 // Exports elements
 exports.declare = function(prop){
     var self = this;
@@ -43,6 +61,7 @@ exports.declare = function(prop){
     exports.style(self.name);
     if (!Core.isObject(self.extend)) self.extend = {};
     Core.log('Declaring elemental', 'sys:ui:{' + self.name + '}') ;
+    exports.declared[self.name] = true;
     this.element = function(properties){
         var element = {};
         // detect classes declared and apply styles.
