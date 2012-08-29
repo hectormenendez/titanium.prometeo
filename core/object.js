@@ -57,10 +57,16 @@ exports.count = function(obj){
  *
  * @author Héctor Menéndez <etor.mx@gmail.com>
  * @created 2012/AGO/15 10:27
+ * @updated 2012/AGO/29 02:22 Using switch, instead of ternary.
  */
 exports.stringify = function(obj){
-    var log = {};
-    for (var l in obj)
-        log[l] = typeof obj[l] == 'function'?'callback()':JSON.stringify(obj[l]).replace(/\"/g,"'");
-    return JSON.stringify(log);
+	var log = {};
+	for (var l in obj) {
+		switch (typeof obj[l]){
+			case 'function' : log[l] = 'callback'; break;
+			case   'object' : log[l] = JSON.stringify(obj[l]).replace(/\"/g,"'"); break;
+			default         : log[l] = obj[l];
+		}
+	}
+	return JSON.stringify(log);
 };
