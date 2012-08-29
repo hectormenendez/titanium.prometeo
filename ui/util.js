@@ -48,7 +48,7 @@ exports.declare = function(prop){
         // detect classes declared and apply styles.
         properties = exports.classer(self.name, properties);
         // create titanium element and make it available for both constructor and element.
-        Core.log('Creating Raw element ' + self.method.toString(), 'sys:ui:{' + self.name + '}');
+        Core.log('Creating Raw element ' + Core.stringify(properties), 'sys:ui:{' + self.name + '}');
         element.raw = self.raw = self.method(properties);
         // if there's a constructor defined, run it and delete it.
         if (Core.isFunction(self.extend.construct)) {
