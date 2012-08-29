@@ -8,7 +8,10 @@ exports.Titanium = {
     add: function(element, properties){
         Core.log(element, 'sys:ui:util:titanium:add');
 		// if an element is being sent, just add it with no auto variable.
-        if (Core.isObject(element)){
+		// Note: I'm not using Core.isObject on purpose, since it checkd for an
+		//       actual object to be declared ie: [Object object], and Ti Objects
+		//       are instances ie: [Object View]
+        if (typeof element == 'object'){
 	        element = exports.getTitanium(element);
 	        return this.raw.add(element);
         }
@@ -33,20 +36,20 @@ exports.Titanium = {
         return this.raw.remove(element);
     },
 
-    addEvent: function(event, callback){
-        event = event.toString();
+    addEvent: function(e, callback){
+        e = e.toString();
         if (!Core.isFunction(callback))
             return Core.error('sys:ui:util:titanium:addevent:callback');
-        Core.log(event, 'sys:ui:util:titanium:addevent');
-        return this.raw.addEventListener(event, callback);
+        Core.log(e, 'sys:ui:util:titanium:addevent');
+        return this.raw.addEventListener(e, callback);
     },
 
-    delEvent: function(event, callback){
-        event = event.toString();
+    delEvent: function(e, callback){
+        e = e.toString();
         if (!Core.isFunction(callback))
             return Core.error('sys:ui:util:titanium:delevent:callback');
-        Core.log(event, 'sys:ui:util:titanium:delevent');
-        return this.raw.removeEventListener(event, callback);
+        Core.log(e, 'sys:ui:util:titanium:delevent');
+        return this.raw.removeEventListener(e, callback);
     },
 
     raw : null
@@ -89,15 +92,17 @@ exports.declare = function(prop){
  * @created 2012/AGO/08 21:27
  */
 exports.getTitanium = function(element){
-    if (typeof element != 'object') return Core.error('sys:ui:util:titanium:object');
-    var found = true;
-    for (var i in exports.Titanium) {
-        if (Core.isDefined(element[i])) continue;
-        found = false;
-        break;
-    }
-    if (found) return element.raw;
-    if (Core.isDefined(element.titaniumName)) return element;
+    if (typeof element != 'object')
+    	return Core.error('sys:ui:util:titanium:object');
+    // custom element?
+	if (Core.isDefined(element.raw))
+		return element.raw;
+	// custom raw element?
+    if (Core.isDefined(element.titaniumName))
+    	return element;
+    // native raw element, then? (TODO: Find a better way of doing this.)
+    if (Core.isDefined(element.children) && Core.isDefined(element.parent))
+    	return element;
     return Core.error('sys:ui:util:titanium:invalid');
 };
 
