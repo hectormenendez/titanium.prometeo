@@ -20,19 +20,26 @@ var Core = {};
  */
 Core.time = new Date().getTime();
 
-var Path = require('sys/core/path');
-var Obj  = require('sys/core/object');
-var Type = require('sys/core/type');
-
-//if (!Path.exists('config')) throw 'A configuration file must exist.';
+/**
+ * Load Core sub modules.
+ */
+var Path   = require('sys/core/path');
+var Obj    = require('sys/core/object');
+var Type   = require('sys/core/type');
+var Device = require('sys/core/device');
 
 /**
+ * Core configuration.
+ * Sets default configuration, which would be overwritten by user's
  * {config}
  *
  * @created 2012/AGO/14 17:39 Héctor Menéndez <etor.mx@gmail.com>
  * @see     #config
  */
 Config = Obj.extend({
+
+    // Minimal SDK version that the framework supports.
+    SDK : 2.2,
 
     // Which version of Prometeo are we working on.
     version : 0.1,
@@ -42,6 +49,18 @@ Config = Obj.extend({
 
 }, require('config').core || {});
 
+/**
+ * Basic checkups.
+ */
+if (parseFloat(Ti.version) < 2.2)
+    throw 'Unsupported Titanium version; please upgrade to at least v2.2';
+
+//if (!Path.exists('config'))
+//    throw 'A configuration file was not found.';
+
+if (!Device.isSupported)
+    throw 'The current device is not supported.'
+
 
 /**
  * Path
@@ -50,6 +69,15 @@ Config = Obj.extend({
  * @created 2012/AGO/14 17:42 Héctor Menéndez <etor.mx@gmail.com>
  */
 Core.Path = Path;
+
+
+/**
+ * Device
+ * {prop}   Makes Device module available through framework.
+ *
+ * @created 2012/AGO/28 16:45 Héctor Menéndez <etor.mx@gmail.com>
+ */
+Core.Device = Device;
 
 /**
  * Object

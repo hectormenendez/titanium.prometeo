@@ -4,7 +4,6 @@
  * These are just wrappers for Titanium Available controls.
  */
 var Core   = require('sys/core');
-var Device = require('sys/device');
 var Util   = require('sys/ui/util');
 
 var element;
@@ -17,7 +16,7 @@ element = [
         extend : {
             open:function(){
                 Core.log(element, 'sys:ui:window:open');
-                return this.raw.open(element);
+                return this.raw.open();
             }
         }
     },
@@ -34,7 +33,7 @@ element = [
 ];
 
 // Apple specific element
-if (Device.isApple) element = element.concat([
+if (Core.Device.isApple) element = element.concat([
 
     { name: 'navigation', method:Ti.UI.iPhone.createNavigationGroup }
 
