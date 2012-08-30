@@ -143,9 +143,9 @@ Core.error = function(message, title){
 Core.log = function(message, context){
     if (!Config.debug) return false;
     if (this.isObject(message) || this.isArray(message))
-        message = Core.stringify(message);
+        message = Core.stringify(message, 1);
     else if (this.isArgument(message))
-        message = Core.stringify(this.args(message));
+        message = Core.stringify(this.args(message), 1);
     return Ti.API.log(
         Math.abs(this.time - new Date().getTime()).toString(),
         '[' + (typeof context == 'string'? context.toUpperCase() : 'LOG') + '] ' +

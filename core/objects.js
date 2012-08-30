@@ -67,6 +67,19 @@ Objects.count = function(obj){
     return count;
 };
 
+
+/**
+ * Suppor funciton for stringify. TODO: Document this.
+ */
+var isMultiple = function(o){
+	var isArray  = (o && o instanceof Array);
+	var isObject = (o && !isArray && typeof o == 'object');
+	return {
+		'isArray'  : isArray,
+		'isObject' : isObject
+	}
+}
+
 /**
  * Stringify an object without losing elements containing callbacks.
  *
@@ -76,21 +89,12 @@ Objects.count = function(obj){
  * @updated 2012/AGO/29 16:34 Completely rewritten, now it doesn't depend on
  *                            JSON's stringify anymore.
  */
-Objects.stringify = function(obj, count){
-
-	var isMultiple = function(o){
-		var isArray  = (o && o instanceof Array);
-		var isObject = (o && !isArray && typeof o == 'object');
-		return {
-			'isArray'  : isArray,
-			'isObject' : isObject
-		}
-	}
+Objects.stringify = function(obj, level, count){
+	level = parseInt(level, 10) || Config.maxStringify;
 	count = typeof count == 'number'? (count + 1) : 0;
 	// everything that's not an object will be converted to string.
 	var oMain = isMultiple(obj);
-
-	if (count > Config.maxStringify || (!oMain.isArray && !oMain.isObject))
+	if (count > level || (!oMain.isArray && !oMain.isObject))
 		return '"' + obj.toString() + '"';
 	// okay then, this is either an object or an array
 	var value, oSub, key;
@@ -101,7 +105,7 @@ Objects.stringify = function(obj, count){
 		oSub = isMultiple(value);
 		// be recursive if necessary
 		if (oSub.isArray || oSub.isObject)
-			value = '"' + key + '":' + Objects.stringify(value) + ',';
+			value = '"' + key + '":' + Objects.stringify(value, level, count) + ',';
 		else {
 			// Skip all those elements whose value is not set
 			if (value === undefined) continue;
