@@ -26,4 +26,30 @@ switch (Device.name) {
 if (Device.name == 'ipad' || Device.height > 899 || Device.width > 899)
     Device.isTablet = true;
 
+/**
+ * Converts pixels to DP units. (On older iOS devices 1px = 1dp)
+ *
+ * @param {number} The pixels to convert.
+ * @author Hector Menendez <etor.mx@gmail.com>
+ * @created 2012/AGO/30 08:45
+ */
+Device.px2dp = function(px){
+	px = parseInt(px, 10);
+	return Ti.Platform.displayCaps.dpi > 160?
+		px / (Ti.Platform.displayCaps.dpi / 160) : px;
+}
+
+/**
+ * Converts DP units to pixels. (On older iOS devices 1dp = 1px)
+ *
+ * @param {number} The DPs to convert.
+ * @author Hector Menendez <etor.mx@gmail.com>
+ * @created 2012/AGO/30 08:47
+ */
+Device.dp2px = function(dp){
+	dp = parseInt(dp, 10);
+	return Ti.Platform.displayCaps.dpi > 160?
+		dp * (Ti.Platform.displayCaps.dpi / 160) : dp;
+}
+
 module.exports = Device;
