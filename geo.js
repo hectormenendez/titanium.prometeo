@@ -1,13 +1,14 @@
+var Geo = {};
 
 /**
  * Maximun zoom levels allowed by google.
  */
-exports.zoomax = 20;
+Geo.zoomax = 20;
 
 /**
  * Maximum number of pixels for maps. (based upon 256x256 tiles)
  */
-exports.pixels = 536870912;
+Geo.pixels = 536870912;
 
 /**
  * Converts Pixel XY to Latitude, Longitude.
@@ -15,7 +16,7 @@ exports.pixels = 536870912;
  * @author Héctor Menéndez <etor.mx@gmail.com>
  * @created 2012/AUG/01 02:23
  */
-exports.toCoord = function(geo){
+Geo.toCoord = function(geo){
     if (
         typeof geo      != 'object' ||
         typeof geo.x    != 'number' ||
@@ -23,7 +24,7 @@ exports.toCoord = function(geo){
     )
         return false;
 
-    var offset  = exports.pixels / 2.0;
+    var offset  = Geo.pixels / 2.0;
     var radius  = offset / Math.PI;
 
     geo.latitude  = (
@@ -42,7 +43,7 @@ exports.toCoord = function(geo){
  * @author Héctor Menéndez <etor.mx@gmail.com>
  * @created 2012/AUG/01 02:32
  */
-exports.toPixel = function(geo){
+Geo.toPixel = function(geo){
     if (
         typeof geo           != 'object' ||
         typeof geo.latitude  != 'number' ||
@@ -51,7 +52,7 @@ exports.toPixel = function(geo){
         return false;
 
     // obtain the offset for the zoom level
-    var offset = exports.pixels / 2.0;
+    var offset = Geo.pixels / 2.0;
     var radius = offset / Math.PI;
 
     geo.x = Math.round(
@@ -79,7 +80,7 @@ exports.toPixel = function(geo){
  * @author Héctor Menéndez <etor.mx@gmail.com>
  * @created 2012/AUG/01 04:23
  */
-exports.region = function(geo){
+Geo.region = function(geo){
 
     if (
         typeof geo           != 'object' ||
@@ -91,12 +92,12 @@ exports.region = function(geo){
     )
         return false;
 
-    geo.zoom = geo.zoom > exports.zoomax? exports.zoomax : geo.zoom;
+    geo.zoom = geo.zoom > Geo.zoomax? Geo.zoomax : geo.zoom;
 
     // get pixel information for coordinates
-    geo = exports.toPixel(geo);
+    geo = Geo.toPixel(geo);
 
-    var factor = Math.pow(2, exports.zoomax - geo.zoom);
+    var factor = Math.pow(2, Geo.zoomax - geo.zoom);
     geo.width   = geo.width  * factor;
     geo.height  = geo.height * factor;
 
@@ -105,7 +106,7 @@ exports.region = function(geo){
     var w =  x + geo.width;
     var h =  y + geo.height;
 
-    var neo = exports.toCoord({ x:w, y:h });
+    var neo = Geo.toCoord({ x:w, y:h });
 
     return {
         latitude       : geo.latitude,
@@ -114,3 +115,5 @@ exports.region = function(geo){
         longitudeDelta : Math.abs(neo.longitude - geo.longitude)
     };
 };
+
+module.exports = Geo;
