@@ -39,7 +39,6 @@ Defaults.raw = null;
  * @updated 2012/AGO/30 11:27 Moved it to its own module.
  */
 Defaults.add = function(element, properties){
-
     Core.log(element, 'sys:ui:util:defaults:add');
 	// if an element is being sent, just add it with no auto variable.
 	// Note: I'm not using Core.isObject on purpose, since it checkd for an
@@ -51,14 +50,27 @@ Defaults.add = function(element, properties){
     }
     // but if a string was sent, then the user wants us
     // to create an auto element.
-	if (!Core.isString(element))
-		return Core.error(element, 'sys:ui:util:defaults:add:element');
+	if (!Core.isString(element)) return Core.error(
+		element + ': ' + typeof element,
+		'sys:ui:util:defaults:add:type'
+	);
 	if (!Core.isObject(properties)) properties = {};
 	// all ok, create and add element.
+	// Is a classname being sent? we can support it!
+	var className;
+	if (className = element.match(/^([a-zA-Z][a-zA-Z0-9]+)\.([a-zA-Z][a-zA-Z0-9]+)$/)){
+		element   = className[1];
+		className = className[2];
+		properties = Core.extend(properties, { 'class' : className });
+	}
+	var e = '$' + element  + (className? '_' + className : '');
+
 	var UI = require('sys/ui');
-	this['$' + element] = UI[element](properties);
-	this.add(this['$' + element]);
-	return this['$' + element];
+	if (!Core.isFunction(UI[element]))
+		return Core.error(element, 'sys:ui:util:defaults:add:notfound');
+	this[e] = UI[element](properties);
+	this.add(this[e]);
+	return this[e];
 };
 
 /**
@@ -85,7 +97,7 @@ Defaults.del = function(element){
  * @updated 2012/AGO/30 11:31 Moved it to its own module.
  */
 Defaults.addEvent = function(e, callback){
-    e = e.toString();
+    e = String(e);
     if (!Core.isFunction(callback))
         return Core.error('sys:ui:util:defaults:addevent:callback');
     Core.log(e, 'sys:ui:util:defaults:addevent');
@@ -102,7 +114,7 @@ Defaults.addEvent = function(e, callback){
  * @updated 2012/AGO/30 11:33 Moved it to its own module.
  */
 Defaults.delEvent = function(e, callback){
-    e = e.toString();
+    e = String(e);
     if (!Core.isFunction(callback))
         return Core.error('sys:ui:util:defaults:delevent:callback');
     Core.log(e, 'sys:ui:util:defaults:delevent');
