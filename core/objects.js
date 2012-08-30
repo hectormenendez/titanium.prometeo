@@ -1,5 +1,36 @@
 var Objects = {}
 
+/**
+ * Extend object with N number of arguments (also objects)
+ *
+ * @author Héctor Menéndez <etor.mx@gmail.com>
+ * @created 2012/AGO/01 10:34
+ */
+Objects.extend = function(){
+    var obj = {};
+    Array.prototype.slice.call(arguments).forEach(function(elem){
+        if (typeof elem != 'object') return;
+        for (var propName in elem){
+            if (!elem.hasOwnProperty(propName)) continue;
+            obj[propName] = elem[propName];
+        }
+    });
+    return obj;
+};
+
+
+/**
+ * Default configuration.
+ */
+var Config = Objects.extend({
+
+	maxStringify : 5
+
+}, require('config').Objects || {});
+
+/**
+ * Copy an object
+ */
 Objects.copy = function(obj){
     if (typeof obj != 'object' || !obj instanceof Object) return false;
     var result = {};
@@ -24,24 +55,6 @@ Objects.each = function(obj, callback){
 };
 
 /**
- * Extend object with N number of arguments (also objects)
- *
- * @author Héctor Menéndez <etor.mx@gmail.com>
- * @created 2012/AGO/01 10:34
- */
-Objects.extend = function(){
-    var obj = {};
-    Array.prototype.slice.call(arguments).forEach(function(elem){
-        if (typeof elem != 'object') return;
-        for (var propName in elem){
-            if (!elem.hasOwnProperty(propName)) continue;
-            obj[propName] = elem[propName];
-        }
-    });
-    return obj;
-};
-
-/**
  * Count elements in object
  *
  * @author Héctor Menéndez <etor.mx@gmail.com>
@@ -63,7 +76,8 @@ Objects.count = function(obj){
  * @updated 2012/AGO/29 16:34 Completely rewritten, now it doesn't depend on
  *                            JSON's stringify anymore.
  */
-Objects.stringify = function(obj){
+Objects.stringify = function(obj, count){
+
 	var isMultiple = function(o){
 		var isArray  = (o && o instanceof Array);
 		var isObject = (o && !isArray && typeof o == 'object');
@@ -72,9 +86,11 @@ Objects.stringify = function(obj){
 			'isObject' : isObject
 		}
 	}
+	count = typeof count == 'number'? (count + 1) : 0;
 	// everything that's not an object will be converted to string.
 	var oMain = isMultiple(obj);
-	if (!oMain.isArray && !oMain.isObject)
+
+	if (count > Config.maxStringify || (!oMain.isArray && !oMain.isObject))
 		return '"' + obj.toString() + '"';
 	// okay then, this is either an object or an array
 	var value, oSub, key;
@@ -98,27 +114,6 @@ Objects.stringify = function(obj){
 	}
 	json = (oMain.isArray? json + ']' : json.slice(0,-1) + '}');
 	return json;
-
-/*
-	if (Core.isTitanium(obj))
-		return obj.toString();
-	if (!Core.isArray(obj) && typeof obj != 'object')
-		return JSON.stringify(obj);
-
-	var log = {};
-	// this is an array or an object
-	for (var l in obj) {
-		     if (Core.isFunction(obj[l])) log[l] = 'function(){}';
-		else if (Core.isTitanium(obj[l])) {
-			for (var j in obj[l]){
-				if (!obj[l].hasOwnProperty(j)) continue;
-				Ti.API.log
-			}
-		}
-		else log[l] = obj[l];
-	}
-	return JSON.stringify(log);
-*/
 };
 
 module.exports = Objects;

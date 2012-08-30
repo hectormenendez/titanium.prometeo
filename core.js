@@ -36,7 +36,7 @@ var Device  = require('sys/core/device');
  * @created 2012/AGO/14 17:39 Héctor Menéndez <etor.mx@gmail.com>
  * @see     #config
  */
-Config = Objects.extend({
+var Config = Objects.extend({
 
     // Minimal SDK version that the framework supports.
     SDK : 2.2,
@@ -47,7 +47,7 @@ Config = Objects.extend({
     // Do we need to be verbose?
     debug : false
 
-}, require('config').core || {});
+}, require('config').Core || {});
 
 /**
  * Basic checkups.
