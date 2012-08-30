@@ -64,6 +64,7 @@ Type.isDefined = function(element){
 
 /**
  * Checks if given element is a Ti.UI element.
+ * TODO: Find a better way of doing this.
  *
  * @param {Object} element
  * @author Héctor Menéndez <etor.mx@gmail.com>
