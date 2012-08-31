@@ -36,7 +36,7 @@ Defaults.raw = null;
  * @param {Object} properties
  * @author Hector Menendez <etor.mx@gmail.com>
  * @created 2012/AGO/09 13:34
- * @updated 2012/AGO/30 11:27 Moved it to its own module.
+ * @updated 2012/AGO/31 02:39 AutoAdd now supports classes and varNames.
  */
 Defaults.add = function(element, properties){
     Core.log(element, 'sys:ui:util:defaults:add');
@@ -55,22 +55,23 @@ Defaults.add = function(element, properties){
 		'sys:ui:util:defaults:add:type'
 	);
 	if (!Core.isObject(properties)) properties = {};
-	// all ok, create and add element.
-	// Is a classname being sent? we can support it!
-	var className;
-	if (className = element.match(/^([a-zA-Z][a-zA-Z0-9]+)\.([a-zA-Z][a-zA-Z0-9]+)$/)){
-		element   = className[1];
-		className = className[2];
-		properties = Core.extend(properties, { 'class' : className });
+	// extract element name, class name, and variable name.
+	var rx = /^([a-z][a-z0-9]+)(?:\.([a-z][a-z0-9]+))?(?:\#([a-z][a-z0-9]+))?$/im
+	var match, className, sharpName;
+	if (match = element.match(rx)){
+		element   = match[1];
+		className = Core.isDefined(match[2])? match[2] : undefined;
+		sharpName = Core.isDefined(match[3])? match[3] : undefined;
+		if (className)
+			properties = Core.extend(properties, { 'class' : className });
 	}
-	var e = '$' + element  + (className? '_' + className : '');
-
+	var varName = '$' + (sharpName? sharpName : element + (className? '_' + className : ''));
 	var UI = require('sys/ui');
 	if (!Core.isFunction(UI[element]))
 		return Core.error(element, 'sys:ui:util:defaults:add:notfound');
-	this[e] = UI[element](properties);
-	this.add(this[e]);
-	return this[e];
+	this[varName] = UI[element](properties);
+	this.add(this[varName]);
+	return this[varName];
 };
 
 /**
