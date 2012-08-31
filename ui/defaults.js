@@ -36,15 +36,12 @@ Defaults.raw = null;
  * @param {Object} properties
  * @author Hector Menendez <etor.mx@gmail.com>
  * @created 2012/AGO/09 13:34
- * @updated 2012/AGO/31 02:39 AutoAdd now supports classes and varNames.
+ * @updated 2012/AGO/31 04:21 Using Core.isObject to validate element.
  */
 Defaults.add = function(element, properties){
     Core.log(element, 'sys:ui:util:defaults:add');
 	// if an element is being sent, just add it with no auto variable.
-	// Note: I'm not using Core.isObject on purpose, since it checkd for an
-	//       actual object to be declared ie: [Object object], and Ti Objects
-	//       are instances ie: [Object View]
-    if (typeof element == 'object'){
+    if (Core.isObject(element)){
         element = getTitanium(element);
         return this.raw.add(element);
     }

@@ -28,7 +28,7 @@ Type.isArray = function(element){
  * @created 2012/AGO/8 03:15
  */
 Type.isObject = function(element){
-    return typeof element == 'object' && element.toString() == '[object Object]';
+    return typeof element == 'object' && !Type.isArray(element);
 };
 
 /**
