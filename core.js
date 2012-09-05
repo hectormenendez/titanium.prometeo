@@ -49,6 +49,7 @@ var Config = Objects.extend({
 
 }, require('config').Core || {});
 
+
 /**
  * Basic checkups.
  */
@@ -162,31 +163,32 @@ Core.log = function(message, context){
  *                      The first one must be a string, with the app name.
  *
  * @created 2011/NOV/21 14:33 Héctor Menéndez <etor.mx@gmail.com>
- * @updated 2012/JUL/31 13:10 Héctor Menéndez <etor.mx@gmail.com>
- *
- * @log     Now using commonJS
+ * @updated 2012/SEP/05 13:47 Héctor Menéndez <etor.mx@gmail.com>
+ * 						      Module replication was not being set correclty.
  */
 Core.load = function(args){
+	args = Core.args(args);
     // connvert arguments to an array
-    if (args.length < 1 || typeof args[0] != 'string')
-        return Core.error('sys:core:load:args');
+    if (args.length < 1 || !Core.isString(args[0]))
+    	return Core.error('sys:core:load:args');
     // include file
     var file = args.shift();
     //if (!Path.exists(Path.app + file))
     //    return Core.error(file, 'sys:core:load:file');
     var fn = require(Path.app + file);
     // verify a constructor is defined
-    if (typeof fn.construct != 'function')
+    if (!Type.isFunction(fn.construct))
         return Core.error(file, 'sys:core:load:construct');
     // duplicate constructor, so we can pass arguments to instantiated class.
-    var factory = function(){
-        Core.log([fn, args], 'sys:core:load');
-        return fn.construct.apply(this, args);
-    };
-    factory.prototype = fn.construct.prototype;
-    factory.prototype.id = file;
-   // fn = undefined;
-    return factory;
+	var module = function(){
+		Core.log(args, 'sys:core:load:{' + file + '}');
+		return this.construct.apply(this, args);
+	};
+	for (var i in fn){
+		if (!fn.hasOwnProperty(i)) continue;
+		module.prototype[i] = fn[i]
+	}
+    return module;
 };
 
 module.exports = Core;
