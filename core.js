@@ -178,6 +178,11 @@ Core.load = function(name, args){
 		// pseudo instance
 		var instance = function(){
 			Core.log(args, 'sys:core:load:mod2ins:{' + module.id + '}');
+			if (Type.isDefined(this.__construct)) {
+				Core.log(name, 'sys:core:load:mod2ins:masterconstruct');
+				this.__construct.apply(this, args);
+				this.__construct = undefined;
+			}
 			return this.construct.apply(this, args);
 		}
 	    // verify a constructor is defined
