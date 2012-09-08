@@ -37,10 +37,9 @@ exports.xhr = function(obj){
     if (typeof obj.url != 'string' ) return Core.error('sys:net:xhr:url');
 
     var log = function(message, action){
-        action = action.toUpperCase();
         message = Core.stringify(message).replace(/(\s|\\n)+/g, '');
         message = message.replace(/\\\"+/g,'"');
-        Core.log('['+ action +'] ' + message, 'xhr');
+		Core.log(message, 'sys:net:xhr:{'+ action +'}');
     };
 
     // setup connection
@@ -53,6 +52,12 @@ exports.xhr = function(obj){
     xhr.onload = function(){
         obj.load.call(this, this.responseText);
         log(this, 'loaded');
+        // For some reason, Android is not triggering onreadystatechange
+		// TODO: Fix this.
+        if (Core.Device.isAndroid && this.status === 200){
+        	obj.success.call(this, this.responseText);
+        	log(this, 'success');
+        }
     };
 
     xhr.onerror = function(){
@@ -60,7 +65,7 @@ exports.xhr = function(obj){
         log(this, 'error');
     };
 
-    xhr.onreadystatechange = function(){
+    xhr.onreadystatechange = function(e){
         log(this, 'state ' + this.readyState);
         if (this.readyState !== 4 || this.status !== 200) return false;
         obj.success.call(this, this.responseText);
@@ -68,7 +73,6 @@ exports.xhr = function(obj){
     };
 
     log(obj.url, obj.type);
-    log(obj.data, 'data');
     xhr.open(obj.type, obj.url);
 
     // setup headers
@@ -78,6 +82,7 @@ exports.xhr = function(obj){
         xhr.setRequestHeader(name, obj.header[name]);
     }
 
+    log(obj.data, 'data');
     xhr.send(obj.data);
 
     return xhr;
