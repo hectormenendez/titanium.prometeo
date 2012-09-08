@@ -169,8 +169,7 @@ Core.log = function(message, context){
 Core.load = function(name, args){
 	if (!Type.isString(name))
 		return Core.error('sys:core:load:name');
-	if (!Type.isArray(args))
-		return Core.error('sys:core:load:args');
+	if (!Type.isArray(args)) args = [];
 	// this private method will convert a commonJS module to a instance.
 	var mod2ins = function(module, args, name){
 		if (!Type.isObject(module))
