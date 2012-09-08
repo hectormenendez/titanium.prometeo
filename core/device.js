@@ -7,7 +7,7 @@ Device.isTablet    = false;
 Device.isSupported = true;
 
 Device.name        = Ti.Platform.osname;
-Device.version     = Ti.Platform.version;
+Device.version     = parseFloat(Ti.Platform.version);
 Device.height      = Ti.Platform.displayCaps.platformHeight;
 Device.width       = Ti.Platform.displayCaps.platformWidth;
 
