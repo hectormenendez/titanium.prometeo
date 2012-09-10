@@ -35,8 +35,10 @@ if (Device.name == 'ipad' || Device.height > 899 || Device.width > 899)
  */
 Device.px2dp = function(px){
 	px = parseInt(px, 10);
-	return Ti.Platform.displayCaps.dpi > 160?
+	px = Ti.Platform.displayCaps.dpi > 160?
 		px / (Ti.Platform.displayCaps.dpi / 160) : px;
+	if (Device.isApple && Ti.Platform.displayCaps.dpi > 160) px = px*2;
+	return px;
 }
 
 /**

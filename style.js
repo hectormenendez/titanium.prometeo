@@ -23,7 +23,7 @@ Style.add = function(properties){
     // This element will hold the classes
     element.prototype.$class = {};
     // Define the classer method
-    element.prototype['class'] = function(name, properties){
+    element.prototype.Class = function(name, properties){
         if (!Core.isString(name) || !Core.isObject(properties))
             return Core.error('sys:style:add:class:arguments');
         // specified class, must not previously exist.

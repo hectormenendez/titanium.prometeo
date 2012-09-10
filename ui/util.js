@@ -72,8 +72,8 @@ Util.classer = function(element, obj){
 
     Core.log(element + (klass? '.' + klass : ' [no class]') , 'sys:ui:util:classer');
     return Core.extend(target, obj, {
-        titaniumName  : element,
-        titaniumClass : klass? klass : false
+        titaniumElement : element,
+        titaniumClass   : klass? klass : false
     });
 };
 

@@ -67,6 +67,7 @@ Defaults.add = function(element, properties){
 	if (!Core.isFunction(UI[element]))
 		return Core.error(element, 'sys:ui:util:defaults:add:notfound');
 	this[varName] = UI[element](properties);
+	this[varName].raw.titaniumName = sharpName? sharpName : undefined;
 	this.add(this[varName]);
 	return this[varName];
 };
