@@ -19,6 +19,14 @@ Path.extension = '.js';
  */
 Path.app = 'bundles/';
 
+/**
+ * Since file checking is not behaving normally when compiling javascript for
+ * production, I'm relying on try/catches, it sucks, but I need to get the error
+ * messages thrown in those cases so I can detect when this happens.
+ */
+var dump = 'asdfghjkl123456789';
+try { require(dump); } catch(e) { Path.notfound = String(e).replace(dump, ''); }
+
 
 /**
  * Checks if given file exists, if not, then check if directory exists.

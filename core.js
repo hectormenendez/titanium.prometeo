@@ -20,6 +20,7 @@ var Core = {};
  */
 Core.time = new Date().getTime();
 
+
 /**
  * Load Core sub modules.
  */
@@ -214,7 +215,10 @@ Core.load = function(name, args){
 	for (i in MVC){
 		 p = (i == 'file')? path : path + '/' + i;
 		 try { MVC[i] = require(p); } catch (e){
-		 	Core.log('sys:core:load:catch:{' + name + '}:{' + i + '}');
+		 	// if module not found, just log it, but if an error is found, throw it.
+		 	if (Path.notfound + p == e)
+		 		Core.log(name, 'sys:core:load:notfound:{' + i + '}');
+		 	else throw e;
 		 }
 		 if (MVC[i]) MVC[i] = mod2ins(MVC[i], args, i);
 	}
