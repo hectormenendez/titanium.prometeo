@@ -9,6 +9,41 @@ var Util = {};
  */
 Util.Defaults = Defaults;
 
+var compound = {};
+
+Util.compound = function(name){
+	Core.log(name, 'lib:ui:util:compound:declare');
+	name = String(name);
+	// If we havent imported the module, do it so.
+	if (!Core.isDefined(compound[name])){
+		var path   = 'lib/ui/' + name;
+		try { compound[name] = require(path); } catch (e) {
+			if (e == Core.Path.notfound + path)
+				return Core.error(e, 'sys:ui:util:compound:{' + name + '}');
+			throw String(e);
+		}
+		if (!Core.isDefined(compound[name].construct))
+			return Core.error(name, 'sys:ui:util:compound:construct');
+		if (!Core.isElemental(compound[name].$element))
+			return Core.error(name, 'sys:ui:util:compound:$element');
+	}
+	// copy the module and treat it as instance.
+	var fn = compound[name].construct;
+	for (var i in compound[name])
+		if (compound[name].hasOwnProperty(i) && i != 'construct')
+			fn.prototype[i] = compound[name][i];
+	// return the container element, and make sure original instance is
+	// still available to the compound developer.
+	return function(){
+		Core.log(name, 'lib:ui:util:compound:instance');
+		var instance = new fn();
+		instance.$element.instance = function(){
+			return instance;
+		}
+		return instance.$element;
+	}
+};
+
 /**
  * Declares Elementals
  * TODO: Write documentation.
