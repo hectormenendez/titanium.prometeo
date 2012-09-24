@@ -72,12 +72,13 @@ Type.isDefined = function(element){
  */
 Type.isTitanium = function(element){
 	return (
-		typeof element == 'object' &&
-		(
-			Type.isDefined(element.titaniumName)
-		||
-			(Type.isDefined(element.children) && Type.isDefined(element.parent))
-		)
+		Type.isObject(element) && Type.isDefined(element.titaniumElement)
+	);
+}
+
+Type.isElemental = function(element){
+	return (
+		Type.isObject(element) && Type.isTitanium(element.raw)
 	);
 }
 
