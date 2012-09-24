@@ -168,16 +168,15 @@ Core.log = function(message, context){
  * 						      Module replication was not being set correclty.
  */
 Core.load = function(name, args){
-	if (!Type.isString(name))
-		return Core.error('sys:core:load:name');
+	if (!Type.isString(name)) return Core.error('sys:core:load:name');
 	if (!Type.isArray(args)) args = [];
 	// this private method will convert a commonJS module to a instance.
 	var mod2ins = function(module, args, name){
 		if (!Type.isObject(module))
-			return Core.error('sys:core:load:mod2ins:type');
+			return Core.error(name, 'sys:core:load:mod2ins:type');
 		// pseudo instance
 		var instance = function(){
-			Core.log(args, 'sys:core:load:mod2ins:{' + module.id + '}');
+			Core.log(args, 'sys:core:load:mod2ins:{' + name + '}');
 			if (Type.isDefined(this.__construct)) {
 				Core.log(name, 'sys:core:load:mod2ins:masterconstruct');
 				this.__construct.apply(this, args);
@@ -187,15 +186,20 @@ Core.load = function(name, args){
 		}
 	    // verify a constructor is defined
 	    if (!Type.isFunction(module.construct))
-	        return Core.error(module.id, 'sys:core:load:mod2ins:construct');
-	    var i, master = false;
+	        return Core.error(name, 'sys:core:load:mod2ins:construct');
+	    var i, path = 'lib/' + Path.bundles + name, master = false;
 	    //
 	    var extend = function(e){
 	    	for (i in e) if (e.hasOwnProperty(i)) instance.prototype[i] = e[i];
 	    }
 	    // but wait, does a master file exist? if so, extend it.
-	    try { master = require('lib/' + Path.app + name); } catch(e){
-	    	Core.log(name, 'sys:core:load:mod2ins:master');
+	    try {
+	    	master = require(path);
+	    } catch(e) {
+	    	e = String(e);
+	    	if (Path.notfound + path == e)
+	    		Core.log(name, 'sys:core:load:mod2ins:master:notfound');
+	    	else throw path + ': ' + e;
 	    };
 	    if (master) extend(master);
 	    // convert module properties to instance properties.
@@ -210,17 +214,21 @@ Core.load = function(name, args){
 		view    : false,
 		control : false
 	};
-	var path = Path.app + name;
+	var path = Path.bundles + name;
 	var i,p;
 	for (i in MVC){
 		 p = (i == 'file')? path : path + '/' + i;
-		 try { MVC[i] = require(p); } catch (e){
+
+		 try {
+		 	MVC[i] = require(p);
+		 } catch (e){
+		 	e = String(e);
 		 	// if module not found, just log it, but if an error is found, throw it.
 		 	if (Path.notfound + p == e)
 		 		Core.log(name, 'sys:core:load:notfound:{' + i + '}');
-		 	else throw e;
+		 	else throw p + ': ' + e;
 		 }
-		 if (MVC[i]) MVC[i] = mod2ins(MVC[i], args, i);
+		 if (MVC[i])  MVC[i] = mod2ins(MVC[i], args, i);
 	}
 	return MVC;
 };

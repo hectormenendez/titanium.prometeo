@@ -17,7 +17,7 @@ Path.extension = '.js';
  * Note: Do not name this folder 'app', as in Ti v2.2 there's a bug where
  *       an error is thrown if the compiler detects app as name.
  */
-Path.app = 'bundles/';
+Path.bundles = 'bundles/';
 
 /**
  * Since file checking is not behaving normally when compiling javascript for
