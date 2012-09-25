@@ -24,19 +24,27 @@ Util.compound = function(name){
 		}
 		if (!Core.isDefined(compound[name].construct))
 			return Core.error(name, 'sys:ui:util:compound:construct');
-		if (!Core.isElemental(compound[name].$element))
+		if (!Core.isDefined(compound[name].$element))
 			return Core.error(name, 'sys:ui:util:compound:$element');
 	}
 	// copy the module and treat it as instance.
 	var fn = compound[name].construct;
+	// Android is not assigning an id (for whatever reason)
+	if (Core.Device.isAndroid) compound[name].id = path;
 	for (var i in compound[name])
-		if (compound[name].hasOwnProperty(i) && i != 'construct')
+		if (compound[name].hasOwnProperty(i) && i != 'construct' && i != 'uri')
 			fn.prototype[i] = compound[name][i];
 	// return the container element, and make sure original instance is
 	// still available to the compound developer.
 	return function(){
 		Core.log(name, 'lib:ui:util:compound:instance');
-		var instance = new fn();
+		// we need to pass arguments to compound constructor
+		var args = Core.args(arguments);
+		var instance = function(){
+			return fn.apply(this, args);
+		}
+		instance.prototype = fn.prototype;
+		instance = new instance();
 		instance.$element.instance = function(){
 			return instance;
 		}
