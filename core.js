@@ -228,7 +228,11 @@ Core.load = function(name, args){
 		 		Core.log(name, 'sys:core:load:notfound:{' + i + '}');
 		 	else throw p + ': ' + e;
 		 }
-		 if (MVC[i])  MVC[i] = mod2ins(MVC[i], args, i);
+		 if (MVC[i]){
+		 	if (Type.isDefined(MVC[i].uri)) MVC[i].uri = undefined;
+		 	if (!Type.isDefined(MVC[i].id)) MVC[i].id  = p;
+		 	MVC[i] = mod2ins(MVC[i], args, i);
+		 }
 	}
 	return MVC;
 };
