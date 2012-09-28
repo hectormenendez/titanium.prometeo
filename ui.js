@@ -17,6 +17,10 @@ element = [
             open:function(){
                 Core.log(element, 'sys:ui:window:open');
                 return this.raw.open();
+            },
+            close:function(){
+                Core.log(element, 'sys:ui:window:close');
+                return this.raw.close();
             }
         }
     },
