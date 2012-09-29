@@ -13,9 +13,8 @@ var Defaults = {};
  *                                  modules.
  */
 var getTitanium = function(element){
-    if (typeof element != 'object') return Core.error('sys:ui:util:titanium:object');
     // custom element?
-	if (Core.isDefined(element.raw)) return element.raw;
+	if (Core.isElemental(element)) return element.raw;
     // native raw element, then?
     if (Core.isTitanium) return element;
     return Core.error('sys:ui:util:titanium:invalid');
