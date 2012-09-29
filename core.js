@@ -144,12 +144,16 @@ Core.error = function(message, title){
  */
 Core.log = function(message, context){
     if (!Config.debug) return false;
+    var time = Math.abs(this.time - new Date().getTime()).toString();
+    // a simple log
+    if (Core.isString(message) && !Core.isDefined(context))
+        return Ti.API.log(time, '[' + message.toUpperCase() + ']');
+    // converting might be needed.
     if (this.isObject(message) || this.isArray(message))
         message = Core.stringify(message, 1);
     else if (this.isArgument(message))
         message = Core.stringify(this.args(message), 1);
-    return Ti.API.log(
-        Math.abs(this.time - new Date().getTime()).toString(),
+    return Ti.API.log(time,
         '[' + (typeof context == 'string'? context.toUpperCase() : 'LOG') + '] ' +
         (typeof message == 'string'? message : '')
     );
