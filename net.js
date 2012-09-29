@@ -68,8 +68,8 @@ exports.xhr = function(obj){
     xhr.onreadystatechange = function(e){
         log(this, 'state ' + this.readyState);
         if (this.readyState !== 4 || this.status !== 200) return false;
-        obj.success.call(this, this.responseText);
         log(this, 'success');
+        obj.success.call(this, this.responseText);
     };
 
     log(obj.url, obj.type);
