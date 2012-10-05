@@ -24,14 +24,30 @@ element = [
             }
         }
     },
+    {
+        name   : 'textfield',
+        method : Ti.UI.createTextField,
+        extend : {
+            value : function(){
+                return this.raw.value;
+            }
+        }
+    },
+    {
+        name   : 'label',
+        method : Ti.UI.createLabel,
+        extend : {
+            text : function(){
+                return this.raw.text;
+            }
+        }
+    },
     { name: 'view'           , method : Ti.UI.createView              },
     { name: 'image'          , method : Ti.UI.createImageView         },
     { name: 'map'            , method : Ti.Map.createView             },
     { name: 'button'         , method : Ti.UI.createButton            },
-    { name: 'label'          , method : Ti.UI.createLabel             },
     { name: 'scrollview'     , method : Ti.UI.createScrollView        },
     { name: 'tableview'      , method : Ti.UI.createTableView         },//TODO
-    { name: 'textfield'      , method : Ti.UI.createTextField         },
     { name: 'tableviewrow'   , method : Ti.UI.createTableViewRow      },//TODO
     { name: 'buttonfacebook' , method : Ti.Facebook.createLoginButton },//TODO test it
     { name: 'picker'         , method : Ti.UI.createPicker            }
