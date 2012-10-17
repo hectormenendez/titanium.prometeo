@@ -28,10 +28,10 @@ var Objects = require('sys/core/objects');
 var Type    = require('sys/core/type');
 var Device  = require('sys/core/device');
 
+
 /**
  * Core configuration.
- * Sets default configuration, which would be overwritten by user's
- * {config}
+ * Sets default configuration, which would be overwritten by user's {config}
  *
  * @created 2012/AGO/14 17:39 Héctor Menéndez <etor.mx@gmail.com>
  * @see     #config
@@ -56,47 +56,9 @@ var Config = Objects.extend({
 if (parseFloat(Ti.version) < 2.2)
     throw 'Unsupported Titanium version; please upgrade to at least v2.2';
 
-//if (!Path.exists('config'))
-//    throw 'A configuration file was not found.';
-
 if (!Device.isSupported)
     throw 'The current device is not supported.'
 
-
-/**
- * Path
- * {prop}   Makes Path module available through framework.
- *
- * @created 2012/AGO/14 17:42 Héctor Menéndez <etor.mx@gmail.com>
- */
-Core.Path = Path;
-
-
-/**
- * Device
- * {prop}   Makes Device module available through framework.
- *
- * @created 2012/AGO/28 16:45 Héctor Menéndez <etor.mx@gmail.com>
- */
-Core.Device = Device;
-
-/**
- * Object
- * {extend} Make Object module methods silently available through core.
- *
- * @created 2012/AGO/14 17:46 Héctor Menéndez <etor.mx@gmail.com>
- * @see     #sys/core/object
- */
-Core = Objects.extend(Core, Objects);
-
-/**
- * Type
- * {extend} Make Type module methods silently available through core.
- *
- * @created 2012/AGO/14 17:48 Héctor Menéndez <etor.mx@gmail.com>
- * @see     #sys/core/type
- */
-Core = Objects.extend(Core, Type);
 
 /**
  * Argument Handler
@@ -145,13 +107,13 @@ Core.log = function(message, context){
     if (!Config.debug) return false;
     var time = Math.abs(this.time - new Date().getTime()).toString();
     // a simple log
-    if (Core.isString(message) && !Core.isDefined(context))
+    if (Core.isString(message) && !Core.Type.isDefined(context))
         return Ti.API.log(time, '[' + message.toUpperCase() + ']');
     // converting might be needed.
     if (this.isObject(message) || this.isArray(message))
-        message = Core.stringify(message, 1);
+        message = Objects.stringify(message, 1);
     else if (this.isArgument(message))
-        message = Core.stringify(this.args(message), 1);
+        message = Objects.stringify(this.args(message), 1);
     return Ti.API.log(time,
         '[' + (typeof context == 'string'? context.toUpperCase() : 'LOG') + '] ' +
         (typeof message == 'string'? message : '')

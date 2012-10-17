@@ -1,5 +1,14 @@
-
 var Device = {};
+
+var Objects = require('sys/core/objects');
+
+/**
+ * Default configuration.
+ */
+var Config = Objects.extend({
+
+}, require('config').Device || {});
+
 
 Device.isApple     = false;
 Device.isAndroid   = false;

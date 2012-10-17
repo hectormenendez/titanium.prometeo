@@ -1,5 +1,14 @@
-
 var Path = {};
+
+var Objects = require('sys/core/objects');
+
+/**
+ * Default configuration.
+ */
+var Config = Objects.extend({
+
+}, require('config').Path || {});
+
 
 /**
  * Resources directory full path

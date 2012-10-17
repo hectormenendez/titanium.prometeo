@@ -11,28 +11,31 @@
  */
 var Style = {};
 
-var Core = require('sys/core');
+var Core    = require('sys/core');
+var Type    = require('sys/core/type');
+var Objects = require('sys/core/objects');
+
 
 /**
  * @created 2012/AGO/15 04:26 Héctor Menéndez <etor.mx@gmail.com>
  */
 Style.add = function(properties){
-    if (!Core.isObject(properties)) return Core.error('sys:style:add:properties');
+    if (!Type.isObject(properties)) return Core.error('sys:style:add:properties');
     var element = function(){};
     element.prototype = properties;
     // This element will hold the classes
     element.prototype.$class = {};
     // Define the classer method
     element.prototype.Class = function(name, properties){
-        if (!Core.isString(name) || !Core.isObject(properties))
+        if (!Core.isString(name) || !Type.isObject(properties))
             return Core.error('sys:style:add:class:arguments');
         // specified class, must not previously exist.
-        if (Core.isDefined(this.$class[name]))
+        if (Type.isDefined(this.$class[name]))
             return Core.error('sys:style:add:class:exists');
         // copy properties.
         var copy = {};
         for(var i in this) if (i != 'class' &&  i != '$class') copy[i] = this[i];
-        properties = Core.extend(copy, properties);
+        properties = Objects.extend(copy, properties);
         this.$class[name] = properties;
     };
     return new element();

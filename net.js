@@ -1,4 +1,7 @@
-var Core = require('sys/core');
+var Core    = require('sys/core');
+var Device  = require('sys/core/device');
+var Objects = require('sys/core/objects');
+
 
 var Config = require('config').net;
 if (typeof Config != 'object') Config = {
@@ -37,7 +40,7 @@ exports.xhr = function(obj){
     if (typeof obj.url != 'string' ) return Core.error('sys:net:xhr:url');
 
     var log = function(message, action){
-        message = Core.stringify(message).replace(/(\s|\\n)+/g, '');
+        message = Objects.stringify(message).replace(/(\s|\\n)+/g, '');
         message = message.replace(/\\\"+/g,'"');
 		Core.log(message, 'sys:net:xhr:{'+ action +'}');
     };
@@ -54,7 +57,7 @@ exports.xhr = function(obj){
         log(this, 'loaded');
         // For some reason, Android is not triggering onreadystatechange
 		// TODO: Fix this.
-        if (Core.Device.isAndroid && this.status === 200){
+        if (Device.isAndroid && this.status === 200){
         	obj.success.call(this, this.responseText);
         	log(this, 'success');
         }
@@ -77,7 +80,7 @@ exports.xhr = function(obj){
 
     // setup headers
     xhr.setRequestHeader('X-HTTP-Method-Override', obj.type);
-    if (Core.count(obj.header)) for (var name in obj.header){
+    if (Objects.count(obj.header)) for (var name in obj.header){
         log(name + ': ' + obj.header[name], 'header');
         xhr.setRequestHeader(name, obj.header[name]);
     }

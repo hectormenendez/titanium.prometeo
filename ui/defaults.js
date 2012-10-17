@@ -1,4 +1,6 @@
-var Core = require('sys/core');
+var Core    = require('sys/core');
+var Type    = require('sys/core/type');
+var Objects = require('sys/core/objects');
 
 var Defaults = {};
 
@@ -14,9 +16,9 @@ var Defaults = {};
  */
 var getTitanium = function(element){
     // custom element?
-	if (Core.isElemental(element)) return element.raw;
+	if (Type.isElemental(element)) return element.raw;
     // native raw element, then?
-    if (Core.isTitanium) return element;
+    if (Type.isTitanium) return element;
     return Core.error('sys:ui:util:titanium:invalid');
 };
 
@@ -35,12 +37,12 @@ Defaults.raw = null;
  * @param {Object} properties
  * @author Hector Menendez <etor.mx@gmail.com>
  * @created 2012/AGO/09 13:34
- * @updated 2012/AGO/31 04:21 Using Core.isObject to validate element.
+ * @updated 2012/AGO/31 04:21 Using Type.isObject to validate element.
  */
 Defaults.add = function(element, properties){
     Core.log(element, 'sys:ui:util:defaults:add');
 	// if an element is being sent, just add it with no auto variable.
-    if (Core.isObject(element)){
+    if (Type.isObject(element)){
         element = getTitanium(element);
         return this.raw.add(element);
     }
@@ -50,20 +52,20 @@ Defaults.add = function(element, properties){
 		element + ': ' + typeof element,
 		'sys:ui:util:defaults:add:type'
 	);
-	if (!Core.isObject(properties)) properties = {};
+	if (!Type.isObject(properties)) properties = {};
 	// extract element name, class name, and variable name.
 	var rx = /^([a-z][a-z0-9]+)(?:\.([a-z][a-z0-9]+))?(?:\#([a-z][a-z0-9]+))?$/im
 	var match, className, sharpName;
 	if (match = element.match(rx)){
 		element   = match[1];
-		className = Core.isDefined(match[2])? match[2] : undefined;
-		sharpName = Core.isDefined(match[3])? match[3] : undefined;
+		className = Type.isDefined(match[2])? match[2] : undefined;
+		sharpName = Type.isDefined(match[3])? match[3] : undefined;
 		if (className)
-			properties = Core.extend(properties, { 'class' : className });
+			properties = Objects.extend(properties, { 'class' : className });
 	}
 	var varName = '$' + (sharpName? sharpName : element + (className? '_' + className : ''));
 	var UI = require('sys/ui');
-	if (!Core.isFunction(UI[element]))
+	if (!Type.isFunction(UI[element]))
 		return Core.error(element, 'sys:ui:util:defaults:add:notfound');
 	this[varName] = UI[element](properties);
 	this[varName].raw.titaniumName = sharpName? sharpName : undefined;
@@ -96,7 +98,7 @@ Defaults.del = function(element){
  */
 Defaults.addEvent = function(e, callback){
     e = String(e);
-    if (!Core.isFunction(callback))
+    if (!Type.isFunction(callback))
         return Core.error('sys:ui:util:defaults:addevent:callback');
     Core.log(e, 'sys:ui:util:defaults:addevent');
     return this.raw.addEventListener(e, callback);
@@ -113,7 +115,7 @@ Defaults.addEvent = function(e, callback){
  */
 Defaults.delEvent = function(e, callback){
     e = String(e);
-    if (!Core.isFunction(callback))
+    if (!Type.isFunction(callback))
         return Core.error('sys:ui:util:defaults:delevent:callback');
     Core.log(e, 'sys:ui:util:defaults:delevent');
     return this.raw.removeEventListener(e, callback);

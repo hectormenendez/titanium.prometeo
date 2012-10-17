@@ -42,7 +42,7 @@ Objects.copy = function(obj){
  * Correctly Iterates an object.
  * If the function returns null, the iteration will break;
  *
- * @usage    Core.each({a:'A',b:'B'}, function(key, val){ this === obj })
+ * @usage    Objects.each({a:'A',b:'B'}, function(key, val){ this === obj })
  * @author   Hector Menendez <etor.mx@gmail.com>
  * @created  2012/AGO/08 02:16
  */

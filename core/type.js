@@ -1,5 +1,15 @@
-
 var Type = {};
+
+var Objects = require('sys/core/objects');
+
+/**
+ * Default configuration.
+ */
+var Config = Objects.extend({
+
+
+}, require('config').Type || {});
+
 
 /**
  * Checks if given element is indeed a string
