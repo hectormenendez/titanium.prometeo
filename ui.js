@@ -50,7 +50,8 @@ element = [
     { name: 'tableview'      , method : Ti.UI.createTableView         },//TODO
     { name: 'tableviewrow'   , method : Ti.UI.createTableViewRow      },//TODO
     { name: 'buttonfacebook' , method : Ti.Facebook.createLoginButton },//TODO test it
-    { name: 'picker'         , method : Ti.UI.createPicker            }
+    { name: 'picker'         , method : Ti.UI.createPicker            },
+    { name: 'buttonbar'      , method : Ti.UI.createButtonBar         }
 ];
 
 // Apple specific element

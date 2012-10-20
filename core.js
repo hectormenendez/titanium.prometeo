@@ -20,7 +20,6 @@ var Core = {};
  */
 Core.time = new Date().getTime();
 
-
 /**
  * Load Core sub modules.
  */
