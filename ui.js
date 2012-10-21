@@ -21,6 +21,18 @@ element = [
             close:function(){
                 Core.log(element, 'sys:ui:window:close');
                 return this.raw.close();
+            },
+            queue:{
+                stack: {
+                    open  : [],
+                    close : []
+                },
+                open:function(callback){
+                    if (!Core.isArray(this.stack.open)) this.stack.open = [];
+                    if (!Core.isFunction(callback))
+                        return Core.error('sys:ui:window:queue:type');
+                    this.stack.open.push(callback);
+                }
             }
         }
     },

@@ -71,7 +71,11 @@ Util.declare = function(prop){
         properties = Util.classer(self.name, properties);
         // create titanium element and make it available for both constructor and element.
         // Core.log('Creating Raw element ' + Core.stringify(properties), 'sys:ui:{' + self.name + '}');
-        element.raw = self.raw = self.method(properties);
+        element.raw = self.raw = self.method(Core.extend(properties,{
+            $self : function(){
+                return element;
+            }
+        }));
         // if there's a constructor defined, run it and delete it.
         if (Core.isFunction(self.extend.construct)) {
             Core.log('Calling constructor', 'sys:ui:{' + self.name + '}');
