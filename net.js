@@ -6,7 +6,7 @@ if (typeof Config != 'object') Config = {
     /**
      * Miliseconds before assuming connection was unsuccesful.
      */
-    timeout: 5000
+    timeout: 10000
 };
 
 
