@@ -80,8 +80,9 @@ Defaults.add = function(element, properties){
  * @updated 2012/AGO/30 11:29 Moved it to its own module.
  */
 Defaults.del = function(element){
-    Core.log(element, 'sys:ui:util:defaults:del');
+    Core.log(element, 'sys:ui:util:defaults:del'); 
     element = getTitanium(element);
+    if (!element) return Core.error('sys:ui:util:defaults:del:notelement');
     return this.raw.remove(element);
 };
 
