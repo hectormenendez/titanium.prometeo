@@ -1,12 +1,12 @@
 var Core = require('sys/core');
 
-var Config = require('config').net;
-if (typeof Config != 'object') Config = {
+var Config = require('config');
+if (typeof Config.Net != 'object') Config = {
 
     /**
      * Miliseconds before assuming connection was unsuccesful.
      */
-    timeout: 10000
+    timeout: 5000
 };
 
 
@@ -44,16 +44,33 @@ exports.xhr = function(obj){
 
     // setup connection
     var xhr  = Ti.Network.createHTTPClient({
-        timeout                    : Config.timeout,
+    	// This has to be set to something slighty higher than our timeout
+    	// otherwise the default timeout value will trigger. 
+    	timeout                    : parseInt(Config.timeout*1.2,10),
         enableKeepAlive            : false,
         validatesSecureCertificate : false
     });
+
+    var timer = new Date().getTime();
+	var tmp;
+
+	var timeout = function(){
+		tmp = this; 
+		var interval = setInterval(function(){
+			var ti = Config.timeout - Math.abs(timer - new Date().getTime());
+			if (ti > 0 && tmp.readyState < 4) return;
+			clearInterval(interval);
+			tmp.abort();
+			tmp.status = 1; // our definition of timeout.
+			xhr.onerror.call(tmp);
+		}, 100);
+	}
 
     xhr.onload = function(){
         obj.load.call(this, this.responseText);
         log(this, 'loaded');
         // For some reason, Android is not triggering onreadystatechange
-		// TODO: Fix this.
+		// FIXME.
         if (Core.Device.isAndroid && this.status === 200){
         	obj.success.call(this, this.responseText);
         	log(this, 'success');
@@ -61,12 +78,17 @@ exports.xhr = function(obj){
     };
 
     xhr.onerror = function(){
-        obj.error.call(this, this.responseText);
-        log(this, 'error');
+		obj.error.call(this, this.responseText);
+		log(this, 'error');
     };
 
     xhr.onreadystatechange = function(e){
+    	if (this.readyState === 1) timeout.call(this);
+    	else tmp = this;
         log(this, 'state ' + this.readyState);
+        
+        if (this.readyState === 4) alert(this.status);
+        
         if (this.readyState !== 4 || this.status !== 200) return false;
         log(this, 'success');
         obj.success.call(this, this.responseText);
@@ -84,6 +106,6 @@ exports.xhr = function(obj){
 
     log(obj.data, 'data');
     xhr.send(obj.data);
-
+    
     return xhr;
 };
