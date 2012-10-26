@@ -51,15 +51,17 @@ exports.xhr = function(obj){
         validatesSecureCertificate : false
     });
 
+	var interval;
     var timer = new Date().getTime();
 	var tmp;
 
 	var timeout = function(){
 		tmp = this; 
-		var interval = setInterval(function(){
+		interval = setInterval(function(){
 			var ti = Config.timeout - Math.abs(timer - new Date().getTime());
 			if (ti > 0 && tmp.readyState < 4) return;
 			clearInterval(interval);
+			if (tmp.status !== 0) return;
 			tmp.abort();
 			tmp.status = 1; // our definition of timeout.
 			xhr.onerror.call(tmp);
@@ -86,9 +88,7 @@ exports.xhr = function(obj){
     	if (this.readyState === 1) timeout.call(this);
     	else tmp = this;
         log(this, 'state ' + this.readyState);
-        
-        if (this.readyState === 4) alert(this.status);
-        
+		if (interval && this.readyState === 4) clearInterval(interval);
         if (this.readyState !== 4 || this.status !== 200) return false;
         log(this, 'success');
         obj.success.call(this, this.responseText);
