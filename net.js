@@ -1,12 +1,9 @@
 var Core = require('sys/core');
 
 var Config = require('config');
-if (typeof Config.Net != 'object') Config = {
 
-    /**
-     * Miliseconds before assuming connection was unsuccesful.
-     */
-    timeout: 10000
+Config = Core.isDefined(Config.Net)? Config.Net : {
+	timeout : 5000
 };
 
 
