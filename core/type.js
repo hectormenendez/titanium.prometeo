@@ -1,6 +1,10 @@
 
 var Type = {};
 
+Type.isBool = function(element){
+	return typeof element === 'boolean';
+}
+
 /**
  * Checks if given element is indeed a string
  *
