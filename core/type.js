@@ -1,6 +1,45 @@
 
 var Type = {};
 
+/**
+ * Checks if given element is indeed a number
+ *
+ * @author  Héctor Menéndez
+ * @created 2012/OCT/29 09:04
+ */
+Type.isNumber = function(element){
+	return typeof element === 'number'
+}
+
+/**
+ * Checks if given element is indeed an Integer.
+ *
+ * @author  Héctor Menéndez
+ * @created 2012/OCT/29 09:08
+ */
+Type.isInteger = function(element){
+	return Type.isNumber(element)
+		&& parseFloat(element) === parseInt(element, 10)
+		&& !isNaN(element); 
+}
+
+/**
+ * Checks if giveelement element is indeed a Float.
+ *
+ * @author  Héctor Menéndez
+ * @created 2012/OCT/29 09:08
+ */
+Type.isFloat = function(element){
+	return Type.isNumber(element) && !Type.isInteger(element); 
+}
+
+
+/**
+ * Checks if given element is indeed a string
+ *
+ * @author  Héctor Menéndez
+ * @created 2012/OCT/27 03:54
+ */
 Type.isBool = function(element){
 	return typeof element === 'boolean';
 }
