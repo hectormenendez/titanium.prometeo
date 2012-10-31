@@ -64,7 +64,7 @@ element = [
     { name: 'buttonfacebook' , method : Ti.Facebook.createLoginButton },//TODO test it
     { name: 'picker'         , method : Ti.UI.createPicker            },
     { name: 'buttonbar'      , method : Ti.UI.createButtonBar         },
-    { name: 'dialog'      	 , method : Ti.UI.createAlertDialog		  }
+    { name: 'dialog'   		 , method : Ti.UI.createAlertDialog		  }
 ];
 
 // Apple specific element
