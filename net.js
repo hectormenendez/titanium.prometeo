@@ -2,17 +2,14 @@ var Core = require('sys/core');
 
 var Config = require('config');
 
-Config = Core.isDefined(Config.Net)? Config.Net : {
-	timeout : 5000
-};
-
-
 /**
  * Make an XML HTTP Request.
  *
  * TODO: Write documentation.
  */
 exports.xhr = function(obj){
+
+	var config = Core.isDefined(Config.Net)? Config.Net : { timeout : 5000 };
 
     if (typeof obj != 'object') return Core.error('sys:net:xhr:object');
     if (typeof obj.success != 'function') obj.success = function(){};
@@ -43,7 +40,7 @@ exports.xhr = function(obj){
     var xhr  = Ti.Network.createHTTPClient({
     	// This has to be set to something slighty higher than our timeout
     	// otherwise the default timeout value will trigger. 
-    	timeout                    : parseInt(Config.timeout*1.2,10),
+    	timeout                    : parseInt(config.timeout*1.2,10),
         enableKeepAlive            : false,
         validatesSecureCertificate : false
     });
@@ -55,7 +52,7 @@ exports.xhr = function(obj){
 	var timeout = function(){
 		tmp = this; 
 		interval = setInterval(function(){
-			var ti = Config.timeout - Math.abs(timer - new Date().getTime());
+			var ti = config.timeout - Math.abs(timer - new Date().getTime());
 			if (ti > 0 && tmp.readyState < 4) return;
 			clearInterval(interval);
 			if (tmp.status !== 0) return;
