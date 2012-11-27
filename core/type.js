@@ -1,14 +1,9 @@
 var Type = {};
 
-var Objects = require('sys/core/objects');
-
 /**
- * Default configuration.
+ * Modules
  */
-var Config = Objects.extend({
-
-
-}, require('config').Type || {});
+var Objects = require('sys/core/objects');
 
 
 /**
@@ -81,15 +76,11 @@ Type.isDefined = function(element){
  * @created 2012/AGO/29 12:26
  */
 Type.isTitanium = function(element){
-	return (
-		Type.isObject(element) && Type.isDefined(element.titaniumElement)
-	);
+	return Type.isObject(element) && Type.isDefined(element.titaniumElement);
 }
 
 Type.isElemental = function(element){
-	return (
-		Type.isObject(element) && Type.isTitanium(element.raw)
-	);
+	return Type.isObject(element) && Type.isTitanium(element.raw);
 }
 
 module.exports = Type;

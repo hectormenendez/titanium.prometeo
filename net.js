@@ -56,7 +56,7 @@ exports.xhr = function(obj){
         obj.load.call(this, this.responseText);
         log(this, 'loaded');
         // For some reason, Android is not triggering onreadystatechange
-		// TODO: Fix this.
+		// FIXME
         if (Device.isAndroid && this.status === 200){
         	obj.success.call(this, this.responseText);
         	log(this, 'success');

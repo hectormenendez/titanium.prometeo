@@ -1,6 +1,13 @@
 var Objects = {}
 
 /**
+ * Module configuration.
+ */
+var Config = require('sys/core/config')('Objects', {
+    depthStringify : 5
+});
+
+/**
  * Extend object with N number of arguments (also objects)
  *
  * @author Héctor Menéndez <etor.mx@gmail.com>
@@ -18,20 +25,10 @@ Objects.extend = function(){
     return obj;
 };
 
-
 /**
- * Default configuration.
+ * Copies every property defined on subject, to create an unreferenced clone.
  */
-var Config = Objects.extend({
-
-	maxStringify : 5
-
-}, require('config').Objects || {});
-
-/**
- * Copy an object
- */
-Objects.copy = function(obj){
+Objects.clone = function(obj){
     if (typeof obj != 'object' || !obj instanceof Object) return false;
     var result = {};
     for(var i in obj) if (obj.hasOwnProperty(i)) result[i] = obj[i];
@@ -90,7 +87,7 @@ var isMultiple = function(o){
  *                            JSON's stringify anymore.
  */
 Objects.stringify = function(obj, level, count){
-	level = parseInt(level, 10) || Config.maxStringify;
+	level = parseInt(level, 10) || Config.depthStringify;
 	count = typeof count == 'number'? (count + 1) : 0;
 	// everything that's not an object will be converted to string.
 	var oMain = isMultiple(obj);

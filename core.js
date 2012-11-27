@@ -10,55 +10,78 @@
  * @created 2012/AGO/14 17:31 Héctor Menéndez <etor.mx@gmail.com>
  * @log     Added Documentation.
  **/
-var Core = {};
+ 
+var Core = {
+    time : new Date().getTime() // Records time Core first loaded
+};
 
 /**
- * Main timer
- * {prop}   Records the first time this file is loaded as soon as possible
- *
- * @see     #sys/core.log
+ * MODULES
  */
-Core.time = new Date().getTime();
-
-/**
- * Load Core sub modules.
- */
-var Path    = require('sys/core/path');
 var Objects = require('sys/core/objects');
 var Type    = require('sys/core/type');
+var Path    = require('sys/core/path');
 var Device  = require('sys/core/device');
-
+var Config  = require('sys/core/config');
+var Style   = require('sys/core/style');
 
 /**
  * Core configuration.
- * Sets default configuration, which would be overwritten by user's {config}
- *
- * @created 2012/AGO/14 17:39 Héctor Menéndez <etor.mx@gmail.com>
- * @see     #config
  */
-var Config = Objects.extend({
-
-    // Minimal SDK version that the framework supports.
-    SDK : 2.2,
-
-    // Which version of Prometeo are we working on.
-    version : 0.1,
-
-    // Do we need to be verbose?
-    debug : false
-
-}, require('config').Core || {});
-
+Core.config = Config('Core', {
+    SDK     : 2.2,   // Minimal SDK version that the framework supports.
+    version : 0.1,   // Which version of Prometeo are we working on.
+    debug   : true   // Do we need to be verbose?
+});
 
 /**
- * Basic checkups.
+ * Error Handler
+ * {method} Throws an error, halting execution.
+ *
+ * @param   {string} message:   The message to be displayed (Unknown by default)
+ * @param   {string}   title:   The Title for the error. (Error by default)
+ *
+ * @note    It's highly encouraged to use the following format for the message:
+ *          {path:to}:{file}:{method}:{keyword}
+ *
+ * @created Héctor Menéndez <etor.mx@gmail.com> 2011/JUL/31 12:31
  */
-if (parseFloat(Ti.version) < 2.2)
-    throw 'Unsupported Titanium version; please upgrade to at least v2.2';
+Core.error = function(message, title){
+    title   = Type.isString(title)   ? title   : 'Error';
+    message = Type.isString(message) ? message : 'Unknown';
+    throw title + '\n\n' + message + '\n';
+};
 
-if (!Device.isSupported)
-    throw 'The current device is not supported.'
-
+/**
+ * Logger
+ * {method} Logs based upon Config debug option.
+ *
+ * @param   {string} message:   The message to be sent to the logger.
+ * @param   {string} context:   A context to facilitate user finding the log source.
+ *
+ * @note    It's encouraged to add the following format as context:
+ *          {path:to}:{file}:{action}
+ *
+ * @created 2012/JUL/31 12:15 Héctor Menéndez <etor.mx@gmail.com>
+ * 
+ * FIXME: Review all logging, there must be a more organized way of doing this. 
+ */
+Core.log = function(message, context){
+    if (!Core.config.debug) return false;
+    var time = Math.abs(this.time - new Date().getTime()).toString();
+    // a simple log
+    if (Type.isString(message) && !Type.isDefined(context))
+        return Ti.API.log(time, '[' + message.toUpperCase() + ']');
+    // converting might be needed.
+    if (Type.isObject(message) || Type.isArray(message))
+        message = Objects.stringify(message, 1);
+    else if (Type.isArgument(message))
+        message = Objects.stringify(this.args(message), 1);
+    return Ti.API.log(time,
+        '[' + (typeof context == 'string'? context.toUpperCase() : 'LOG') + '] ' +
+        (typeof message == 'string'? message : '')
+    );
+};
 
 /**
  * Argument Handler
@@ -74,132 +97,38 @@ Core.args = function(args){
 };
 
 /**
- * Error Handler
- * {method} Throws an error, halting execution.
- *
- * @param   {string} message:   The message to be displayed (Unknown by default)
- * @param   {string}   title:   The Title for the error. (Error by default)
- *
- * @note    It's highly encouraged to use the following format for the message:
- *          {path:to}:{file}:{method}:{keyword}
- *
- * @created Héctor Menéndez <etor.mx@gmail.com> 2011/JUL/31 12:31
+ * CommonJS safe require.
+ * Exact same behaviour as require, just making sure the file exists. 
  */
-Core.error = function(message, title){
-    title   = typeof title   == 'string'? title   : 'Error';
-    message = typeof message == 'string'? message : 'Unknown';
-    throw   title + ': ' + message;
+Core.require = function(path){
+    var file = Path.exists(path + Path.extension);
+    if (!file) return Core.error(path, 'sys:core:require:notfound');
+    return require(path);
 };
+
+/******************************************************************************
+ * Basic checkups.
+ */
+if (parseFloat(Ti.version) < Core.config.SDK)
+    Core.error('Unsupported Ti version; Upgrade to at least v'+ Core.config.SDK);
+
+if (!Device.isSupported)
+    Core.error('The current device is not supported.');
 
 /**
- * Logger
- * {method} Logs based upon Config debug option.
- *
- * @param   {string} message:   The message to be sent to the logger.
- * @param   {string} context:   A context to facilitate user finding the log source.
- *
- * @note    As with Core.error, is ecouraged to add the following format as context:
- *          {path:to}:{file}:{action}
- *
- * @created 2012/JUL/31 12:15 Héctor Menéndez <etor.mx@gmail.com>
+ * Update parsed stylesheets
  */
-Core.log = function(message, context){
-    if (!Config.debug) return false;
-    var time = Math.abs(this.time - new Date().getTime()).toString();
-    // a simple log
-    if (Core.isString(message) && !Core.Type.isDefined(context))
-        return Ti.API.log(time, '[' + message.toUpperCase() + ']');
-    // converting might be needed.
-    if (this.isObject(message) || this.isArray(message))
-        message = Objects.stringify(message, 1);
-    else if (this.isArgument(message))
-        message = Objects.stringify(this.args(message), 1);
-    return Ti.API.log(time,
-        '[' + (typeof context == 'string'? context.toUpperCase() : 'LOG') + '] ' +
-        (typeof message == 'string'? message : '')
-    );
-};
+var StyleLib = require('sys/style/lib');
+Core.log('sys:core:stylesheet:lib');
+Objects.each(Style.extend('style.css', 'lib/style.css'), function(key, val){
+	StyleLib[key] = val;
+});
 
-/**
- * Application loader
- * {method} Loads a file from the application folder as if it was a module and
- *          runs a custom constructor
- *
- * @param   {array}*    An array of arguments to be sent to the constructor,
- *                      The first one must be a string, with the app name.
- *
- * @created 2011/NOV/21 14:33 Héctor Menéndez <etor.mx@gmail.com>
- * @updated 2012/SEP/05 13:47 Héctor Menéndez <etor.mx@gmail.com>
- * 						      Module replication was not being set correclty.
- */
-Core.load = function(name, args){
-	if (!Type.isString(name)) return Core.error('sys:core:load:name');
-	if (!Type.isArray(args)) args = [];
-	// this private method will convert a commonJS module to a instance.
-	var mod2ins = function(module, args, name){
-		if (!Type.isObject(module))
-			return Core.error(name, 'sys:core:load:mod2ins:type');
-		// pseudo instance
-		var instance = function(){
-			Core.log(args, 'sys:core:load:mod2ins:{' + name + '}');
-			if (Type.isDefined(this.__construct)) {
-				Core.log(name, 'sys:core:load:mod2ins:masterconstruct');
-				this.__construct.apply(this, args);
-				this.__construct = undefined;
-			}
-			return this.construct.apply(this, args);
-		}
-	    // verify a constructor is defined
-	    if (!Type.isFunction(module.construct))
-	        return Core.error(name, 'sys:core:load:mod2ins:construct');
-	    var i, path = 'lib/' + Path.bundles + name, master = false;
-	    //
-	    var extend = function(e){
-	    	for (i in e) if (e.hasOwnProperty(i)) instance.prototype[i] = e[i];
-	    }
-	    // but wait, does a master file exist? if so, extend it.
-	    try {
-	    	master = require(path);
-	    } catch(e) {
-	    	e = String(e);
-	    	if (Path.notfound + path == e)
-	    		Core.log(name, 'sys:core:load:mod2ins:master:notfound');
-	    	else throw path + ': ' + e;
-	    };
-	    if (master) extend(master);
-	    // convert module properties to instance properties.
-	    extend(module);
-		return instance;
-	}
-	// Have to do this with try catches since Titanium is not consistent
-	// with filesystem methods. (specially those with JS involved)
-	var MVC = {
-		file    : false,
-		model   : false,
-		view    : false,
-		control : false
-	};
-	var path = Path.bundles + name;
-	var i,p;
-	for (i in MVC){
-		 p = (i == 'file')? path : path + '/' + i;
+var StyleApp = require('sys/style/app');
+Core.log('sys:core:stylesheet:app');
+Objects.each(Style.extend('style.css', 'app/style.css'), function(key, val){
+	StyleLib[key] = val;
+});
 
-		 try {
-		 	MVC[i] = require(p);
-		 } catch (e){
-		 	e = String(e);
-		 	// if module not found, just log it, but if an error is found, throw it.
-		 	if (Path.notfound + p == e)
-		 		Core.log(name, 'sys:core:load:notfound:{' + i + '}');
-		 	else throw p + ': ' + e;
-		 }
-		 if (MVC[i]){
-		 	if (Type.isDefined(MVC[i].uri)) MVC[i].uri = undefined;
-		 	if (!Type.isDefined(MVC[i].id)) MVC[i].id  = p;
-		 	MVC[i] = mod2ins(MVC[i], args, i);
-		 }
-	}
-	return MVC;
-};
 
 module.exports = Core;

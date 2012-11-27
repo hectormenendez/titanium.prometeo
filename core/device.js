@@ -1,13 +1,16 @@
 var Device = {};
 
-var Objects = require('sys/core/objects');
+/**
+ * Module Configuration
+ */
+var Config = require('sys/core/config')('Device', {
+    
+});
 
 /**
- * Default configuration.
+ * Modules
  */
-var Config = Objects.extend({
-
-}, require('config').Device || {});
+var Objects = require('sys/core/objects');
 
 
 Device.isApple     = false;
