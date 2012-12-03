@@ -39,7 +39,7 @@ exports.xhr = function(obj){
     // setup connection
     var xhr  = Ti.Network.createHTTPClient({
     	// This has to be set to something slighty higher than our timeout
-    	// otherwise the default timeout value will trigger. 
+    	// otherwise the default timeout value will trigger.
     	timeout                    : parseInt(config.timeout*1.2,10),
         enableKeepAlive            : false,
         validatesSecureCertificate : false
@@ -50,7 +50,7 @@ exports.xhr = function(obj){
 	var tmp;
 
 	var timeout = function(){
-		tmp = this; 
+		tmp = this;
 		interval = setInterval(function(){
 			var ti = config.timeout - Math.abs(timer - new Date().getTime());
 			if (ti > 0 && tmp.readyState < 4) return;
@@ -65,12 +65,6 @@ exports.xhr = function(obj){
     xhr.onload = function(){
         obj.load.call(this, this.responseText);
         log(this, 'loaded');
-        // For some reason, Android is not triggering onreadystatechange
-		// FIXME.
-        if (Core.Device.isAndroid && this.status === 200){
-        	obj.success.call(this, this.responseText);
-        	log(this, 'success');
-        }
     };
 
     xhr.onerror = function(){
@@ -100,6 +94,6 @@ exports.xhr = function(obj){
 
     log(obj.data, 'data');
     xhr.send(obj.data);
-    
+
     return xhr;
 };
