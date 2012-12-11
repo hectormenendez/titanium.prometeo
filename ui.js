@@ -59,13 +59,15 @@ element = [
     { name: 'map'            , method : Ti.Map.createView             },
     { name: 'button'         , method : Ti.UI.createButton            },
     { name: 'scrollview'     , method : Ti.UI.createScrollView        },
-    { name: 'tableview'      , method : Ti.UI.createTableView         },//TODO
-    { name: 'tableviewrow'   , method : Ti.UI.createTableViewRow      },//TODO
-    { name: 'buttonfacebook' , method : Ti.Facebook.createLoginButton },//TODO test it
+    { name: 'tableview'      , method : Ti.UI.createTableView         },
+    { name: 'tableviewrow'   , method : Ti.UI.createTableViewRow      },
+    { name: 'buttonfacebook' , method : Ti.Facebook.createLoginButton },
     { name: 'picker'         , method : Ti.UI.createPicker            },
     { name: 'buttonbar'      , method : Ti.UI.createButtonBar         },
     { name: 'dialog'   		 , method : Ti.UI.createAlertDialog		  },
-    { name: 'optionaldialog' , method : Ti.UI.createOptionDialog	  }
+    { name: 'optionaldialog' , method : Ti.UI.createOptionDialog	  },
+    { name: 'pickercolum'	 , method :	Ti.UI.createPickerColumn	  },
+    { name: 'pickerrow'  	 , method : Ti.UI.createPickerRow		  }
 ];
 
 // Apple specific element
