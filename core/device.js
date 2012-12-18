@@ -26,6 +26,15 @@ switch (Device.name) {
 if (Device.name == 'ipad' || Device.height > 899 || Device.width > 899)
     Device.isTablet = true;
 
+Device.density = Ti.Platform.displayCaps.density;
+Device.dpi     = Ti.Platform.displayCaps.dpi;
+
+if (Device.isAndroid){
+    Device.dpiFactor = Ti.Platform.displayCaps.logicalDensityFactor;
+    Device.dpiX      = Ti.Platform.displayCaps.xdpi;
+    Device.dpiY      = Ti.Platform.displayCaps.ydpy;
+}
+
 /**
  * Converts pixels to DP units. (On older iOS devices 1px = 1dp)
  *
