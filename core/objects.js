@@ -95,7 +95,7 @@ Objects.stringify = function(obj, level, count){
 	// everything that's not an object will be converted to string.
 	var oMain = isMultiple(obj);
 	if (count > level || (!oMain.isArray && !oMain.isObject))
-		return '"' + obj.toString() + '"';
+		return '"' + String(obj) + '"';
 	// okay then, this is either an object or an array
 	var value, oSub, key;
 	var json = oMain.isArray? '[' : '{';
