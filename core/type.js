@@ -61,7 +61,8 @@ Type.isString = function(element){
  * @created 2012/AGO/8 03:15
  */
 Type.isArray = function(element){
-    return typeof element == 'object' && element instanceof Array;
+	// FIXME: instanceof Array not working on Android
+    return typeof element == 'object' && typeof element.length != 'undefined';
 };
 
 /**
