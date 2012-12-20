@@ -54,13 +54,13 @@ var Config = Objects.extend({
  * Basic checkups.
  */
 if (parseFloat(Ti.version) < 2.2)
-    throw 'Unsupported Titanium version; please upgrade to at least v2.2';
+    throw 'Unsupported Titanium version; please upgrade to at least v' + Ti.version;
 
 //if (!Path.exists('config'))
 //    throw 'A configuration file was not found.';
 
 if (!Device.isSupported)
-    throw 'The current device is not supported.'
+    throw 'The current device is not supported.';
 
 
 /**
@@ -157,6 +157,15 @@ Core.log = function(message, context){
         (typeof message == 'string'? message : '')
     );
 };
+
+Core.trace = function(trace, id, ar){
+    if (!Config.debug) return false;
+    var time = Math.abs(this.time - new Date().getTime()).toString();
+    trace = Core.isDefined(ar)? trace + ' >> ' + Core.stringify(ar,1) : trace;
+    trace = Core.isDefined(id)? id + '.' + trace : trace;
+    return Ti.API.log(':trace:', trace);
+};
+
 
 /**
  * Application loader
