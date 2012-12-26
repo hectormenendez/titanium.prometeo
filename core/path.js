@@ -4,7 +4,7 @@ var Path = {};
 /**
  * Resources directory full path
  */
-Path.resources = Ti.Filesystem.resourcesDirectory;
+Path.resources = Ti.Filesystem.getResourcesDirectory();
 
 /**
  * Default extension for application files.
@@ -19,29 +19,36 @@ Path.extension = '.js';
  */
 Path.bundles = 'bundles/';
 
-Path.get = function(path){
-    return Ti.Filesystem.getFile(Path.resources, String(path));
-};
+/**
+ * Since file checking is not behaving normally when compiling javascript for
+ * production, I'm relying on try/catches, it sucks, but I need to get the error
+ * messages thrown in those cases so I can detect when this happens.
+ */
+var dump = 'asdfghjkl123456789';
+try { require(dump); } catch(e) { Path.notfound = String(e).replace(dump, ''); }
+
 
 /**
  * Checks if given file exists, if not, then check if directory exists.
  * The context will be the resources directory.
  */
 Path.exists = function(path){
-    var file = Path.get(path);
-    return file.exists()? file : false;
+    var i, b;
+    //path = [Path.resources + path + Path.extension, Path.resources+path];
+    //for (i in path){
+        var file = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, path.toString() + '.js');
+		return file.exists();
+
+        if (b) return true;
+    //}
+    return false;
 };
 
 
 Path.read = function(path){
-    var file = Path.exists(path);
-    if (!file) return null;
-    return file.read();
-};
-
-Path.text = function(path){
-    var blob = Path.read(path);
-    if (!blob) return null;
+    //if (!Path.exists(path)) return false;
+    var file = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, path + Path.extension);
+    var blob = file.read();
     return blob.text;
 };
 
