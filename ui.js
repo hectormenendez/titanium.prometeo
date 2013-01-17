@@ -54,6 +54,24 @@ element = [
             }
         }
     },
+    {
+	name	: 'switch',
+	method	: Ti.UI.createSwitch,
+	extend	: {
+		value : function(){
+			return this.raw.value;
+		}
+	}
+    },
+    {
+	name: 'picker',
+	method : Ti.UI.createPicker,
+	extend : {
+		selected : function(column, row){
+			return this.raw.setSelectedRow(column, row, false);
+		}
+	}
+    },
     { name: 'view'           , method : Ti.UI.createView              },
     { name: 'image'          , method : Ti.UI.createImageView         },
     { name: 'map'            , method : Ti.Map.createView             },
@@ -62,7 +80,6 @@ element = [
     { name: 'tableview'      , method : Ti.UI.createTableView         },
     { name: 'tableviewrow'   , method : Ti.UI.createTableViewRow      },
     { name: 'buttonfacebook' , method : Ti.Facebook.createLoginButton },
-    { name: 'picker'         , method : Ti.UI.createPicker            },
     { name: 'buttonbar'      , method : Ti.UI.createButtonBar         },
     { name: 'dialog'   		 , method : Ti.UI.createAlertDialog		  },
     { name: 'optionaldialog' , method : Ti.UI.createOptionDialog	  },
