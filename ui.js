@@ -64,7 +64,7 @@ element = [
 	}
     },
     {
-	name: 'picker',
+	name: 'check',
 	method : Ti.UI.createPicker,
 	extend : {
 		selected : function(column, row){
