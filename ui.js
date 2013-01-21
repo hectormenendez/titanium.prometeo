@@ -55,23 +55,23 @@ element = [
         }
     },
     {
-	name	: 'switch',
-	method	: Ti.UI.createSwitch,
-	extend	: {
-		value : function(){
-			return this.raw.value;
+		name	: 'check',
+		method	: Ti.UI.createSwitch,
+		extend	: {
+			value : function(){
+				return this.raw.value;
+			}
 		}
-	}
     },
     {
-	name: 'check',
-	method : Ti.UI.createPicker,
-	extend : {
-		selected : function(column, row){
-			return this.raw.setSelectedRow(column, row, false);
+		name: 'picker',
+		method : Ti.UI.createPicker,
+		extend : {
+			selected : function(column, row){
+				return this.raw.setSelectedRow(column, row, false);
+			}
 		}
-	}
-    },
+	},
     { name: 'view'           , method : Ti.UI.createView              },
     { name: 'image'          , method : Ti.UI.createImageView         },
     { name: 'map'            , method : Ti.Map.createView             },
