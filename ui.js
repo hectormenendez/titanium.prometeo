@@ -72,6 +72,12 @@ element = [
 			}
 		}
 	},
+	{ 
+		name: 'browser', 
+		method : function(url){
+			Ti.Platform.openURL(url);
+		}	
+	},
     { name: 'view'           , method : Ti.UI.createView              },
     { name: 'image'          , method : Ti.UI.createImageView         },
     { name: 'map'            , method : Ti.Map.createView             },
