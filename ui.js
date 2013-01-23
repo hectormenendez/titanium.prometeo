@@ -74,8 +74,8 @@ element = [
 	},
 	{ 
 		name: 'browser', 
-		method : function(url){
-			Ti.Platform.openURL(url);
+		method : function(obj){
+			Ti.Platform.openURL(obj.url);
 		}	
 	},
     { name: 'view'           , method : Ti.UI.createView              },
