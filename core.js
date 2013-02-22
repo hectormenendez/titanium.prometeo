@@ -129,6 +129,10 @@ Core.error = function(message, title){
     throw   title + ': ' + message;
 };
 
+Core.exception = function(message, context){
+	this.message = Core.isDefined(message)? message : '';
+};
+
 /**
  * Logger
  * {method} Logs based upon Config debug option.
