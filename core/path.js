@@ -6,6 +6,15 @@ var Path = {};
  */
 Path.resources = Ti.Filesystem.getResourcesDirectory();
 
+
+/**
+ * Cache directory
+ */
+Path.cache = Ti.Filesystem.applicationCacheDirectory;
+
+
+
+
 /**
  * Default extension for application files.
  */
@@ -18,6 +27,7 @@ Path.extension = '.js';
  *       an error is thrown if the compiler detects app as name.
  */
 Path.bundles = 'bundles/';
+
 
 /**
  * Since file checking is not behaving normally when compiling javascript for
