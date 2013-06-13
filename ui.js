@@ -5,6 +5,7 @@
  */
 var Core   = require('sys/core');
 var Util   = require('sys/ui/util');
+var Facebook = require("sys/facebook");
 
 var element;
 
@@ -94,12 +95,13 @@ element = [
 	{ name: 'scrollview'     , method : Ti.UI.createScrollView        },
 	{ name: 'tableview'      , method : Ti.UI.createTableView         },
 	{ name: 'tableviewrow'   , method : Ti.UI.createTableViewRow      },
-	{ name: 'buttonfacebook' , method : Ti.Facebook.createLoginButton },
+	{ name: 'buttonfacebook' , method : Facebook.createLoginButton 	  },
 	{ name: 'buttonbar'      , method : Ti.UI.createButtonBar         },
 	{ name: 'dialog'         , method : Ti.UI.createAlertDialog       },
 	{ name: 'optionaldialog' , method : Ti.UI.createOptionDialog      },
 	{ name: 'pickercolum'    , method : Ti.UI.createPickerColumn      },
-	{ name: 'pickerrow'      , method : Ti.UI.createPickerRow         }
+	{ name: 'pickerrow'      , method : Ti.UI.createPickerRow         },
+	{ name: 'scrollableView' , method : Ti.UI.createScrollableView    }
 ];
 
 // Apple specific element

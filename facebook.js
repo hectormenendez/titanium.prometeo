@@ -1,8 +1,3 @@
 var Core     = require('sys/core');
-
-var API = Core.Device.isApple ? require("facebook") : Ti.Facebook;
-
-var Facebook = {};
-Facebook = API;
-
+var Facebook = Core.Device.isApple ? require("facebook") : Ti.Facebook;
 module.exports = Facebook;
