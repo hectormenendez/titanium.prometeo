@@ -62,6 +62,8 @@ Type.isString = function(element){
  */
 Type.isArray = function(element){
 	// FIXME: instanceof Array not working on Android
+	if(element == null || !element) 
+		return false; 
     return typeof element == 'object' && typeof element.length != 'undefined';
 };
 
@@ -115,15 +117,23 @@ Type.isDefined = function(element){
  * @created 2012/AGO/29 12:26
  */
 Type.isTitanium = function(element){
-	return (
-		Type.isObject(element) && Type.isDefined(element.titaniumElement)
-	);
+	try{
+		return (
+			Type.isObject(element) && Type.isDefined(element.titaniumElement)
+		);
+	}catch(error){
+		return false;
+	}
 }
 
 Type.isElemental = function(element){
-	return (
-		Type.isObject(element) && Type.isTitanium(element.raw)
-	);
+	try{
+		return (
+			Type.isObject(element) && Type.isTitanium(element.raw)
+		);
+	}catch(error){
+		return false;
+	}
 }
 
 module.exports = Type;
